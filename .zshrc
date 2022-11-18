@@ -72,7 +72,7 @@ ZSH_THEME="agnoster"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   adb
-  aws
+  # aws
   colored-man-pages
   colorize
   command-not-found
@@ -116,6 +116,9 @@ plugins=(
   zsh-navigation-tools
 )
 
+# zsh-completions
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -157,3 +160,12 @@ setopt GLOB_DOTS
 # Set nano as default editor
 export EDITOR='nano'
 
+# For kubectx/antibody
+autoload -U compinit && compinit
+
+export GO111MODULE=on
+
+# kubecolor
+# source <(kubectl completion zsh)
+# alias kubectl=kubecolor
+# compdef kubecolor=kubectl

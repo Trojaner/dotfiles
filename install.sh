@@ -55,8 +55,13 @@ ln -s $BASE_DIR/.zshrc $HOME_DIR/.zshrc
 ln -s $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
 ln -s $BASE_DIR/.fastfile $HOME_DIR/.fastfile
 
-# Install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+# Install oh-my-zsh and related stuff
+if [ ! -d $HOME_DIR/.oh-my-zsh ]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
+curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
+git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions
 
 # Import SSH public key
 echo "Adding SSH public key"
