@@ -2,7 +2,7 @@
 	defaultBranch = main
 
 [color]
-	ui = auto
+	ui = true
 
 [color "branch"]
 
