@@ -50,10 +50,11 @@ ensure_packages_exist nano fd-find tmux tmuxinator fzf
 
 # Link files
 echo "Linking files"
-rm -f $HOME_DIR/.zshrc $HOME_DIR/.gitconfig $HOME_DIR/.fastfile
+rm -f $HOME_DIR/.zshrc $HOME_DIR/.gitconfig $HOME_DIR/.fastfile $HOME_DIR/.profile
 ln -s $BASE_DIR/.zshrc $HOME_DIR/.zshrc
 ln -s $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
 ln -s $BASE_DIR/.fastfile $HOME_DIR/.fastfile
+ln -s $BASE_DIR/.profile $HOME_DIR/.profile
 
 # Install oh-my-zsh and related stuff
 if [ ! -d $HOME_DIR/.oh-my-zsh ]; then
