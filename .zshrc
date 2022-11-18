@@ -149,7 +149,7 @@ bindkey "\e[1;3C" forward-word
 bindkey "\e[1;3D" backward-word
 
 # Always list all files
-alias ls='ls -a'
+alias ls='ls -a --color=auto'
 
 # Include hidden files in GLOB
 setopt GLOB_DOTS

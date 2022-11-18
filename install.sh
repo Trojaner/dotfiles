@@ -55,6 +55,9 @@ ln -s $BASE_DIR/.zshrc $HOME_DIR/.zshrc
 ln -s $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
 ln -s $BASE_DIR/.fastfile $HOME_DIR/.fastfile
 
+# Install oh-my-zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
 # Import SSH public key
 echo "Adding SSH public key"
 mkdir -p $HOME_DIR/.ssh/
@@ -72,8 +75,10 @@ if [ ! -f $PRIVATE_KEY_PATH ]; then
 else
   eval `ssh-agent -s`
   ssh-add $PRIVATE_KEY_PATH
+  chmod 400 $HOME_DIR/.ssh/esozbek_id
   rm -f $HOME_DIR/.ssh/config
   echo "IdentityFile $PRIVATE_KEY_PATH" >> $HOME_DIR/.ssh/config
+  chmod 600 $HOME_DIR/.ssh/config
 fi
 
 echo "Cleanup..."
