@@ -26,6 +26,6 @@ if [ -d "$HOME/.local/bin" ] ; then
   PATH="$HOME/.local/bin:$PATH"
 fi
 
-if [ -f /var/run/reboot-required ]
+if [ -f /var/run/reboot-required ]; then
   cat /var/run/reboot-required
 fi
