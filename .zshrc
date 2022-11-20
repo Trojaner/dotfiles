@@ -151,6 +151,9 @@ source $ZSH/oh-my-zsh.sh
 bindkey "\e[1;3C" forward-word
 bindkey "\e[1;3D" backward-word
 
+# Include common functions
+source ~/.zsh/common_functions.sh
+
 # Always list all files
 alias ls='ls --color=auto'
 

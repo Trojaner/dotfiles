@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/zsh
 set -eu -o pipefail
 
 # Variables
-BASE_DIR=$(dirname $(realpath $0))
+BASE_DIR=$(realpath $(dirname $0)/..)
 HOME_DIR=$(realpath ~)
 
 # Install kubectl
@@ -10,7 +10,8 @@ ARCH=$(dpkg-architecture -q DEB_BUILD_ARCH)
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$ARCH/kubectl"
 
 # Import common functions
-source $BASE_DIR/common_functions.sh
+source $BASE_DIR/scripts/common_functions.sh
+__assert_zsh
 
 # ensure_packages_exist golang-go
 

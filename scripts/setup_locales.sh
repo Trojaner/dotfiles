@@ -2,8 +2,10 @@
 
 set -eu -o pipefail
 
-BASE_DIR=$(dirname $(realpath $0))
-source $BASE_DIR/common_functions.sh
+BASE_DIR=$(realpath $(dirname $0)/..)
+
+source $BASE_DIR/scripts/common_functions.sh
+__assert_zsh
 
 run_with_sudo rm -f "/etc/locale.gen"
 echo "en_US ISO-8859-1" | run_with_sudo tee --append "/etc/locale.gen" >/dev/null

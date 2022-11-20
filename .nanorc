@@ -1,0 +1,20 @@
+include /usr/share/nano/*.nanorc
+include ~/.nano/*.nanorc
+
+# set linenumbers # Makes copying with selection annoying
+# set magic # Not included with nano anymore
+set autoindent
+set smooth
+set softwrap
+set tabstospaces
+set tabsize 2
+set backup
+set backupdir "~/.nano/backup"
+set boldtext
+set historylog
+set locking
+set constantshow
+# set minibar # Only avaialble on nano 5.5+
+set smarthome
+set trimblanks
+set noconvert

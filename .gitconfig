@@ -1,75 +1,75 @@
 [init]
-	defaultBranch = main
+  defaultBranch = main
 
 [color]
-	ui = true
+  ui = true
 
 [color "branch"]
 
-	current = yellow reverse
-	local = yellow
-	remote = green
+  current = yellow reverse
+  local = yellow
+  remote = green
 
 [color "diff"]
 
-	meta = yellow bold
-	frag = magenta bold # line info
-	old = red # deletions
-	new = green # additions
+  meta = yellow bold
+  frag = magenta bold # line info
+  old = red # deletions
+  new = green # additions
 
 [color "status"]
 
-	added = yellow
-	changed = green
-	untracked = cyan
+  added = yellow
+  changed = green
+  untracked = cyan
 
 [diff]
 
-	renames = copies
+  renames = copies
 
 [url "git@github.com:github"]
 
-	insteadOf = "https://github.com/github"
-	insteadOf = "github:github"
-	insteadOf = "git://github.com/github"
+  insteadOf = "https://github.com/github"
+  insteadOf = "github:github"
+  insteadOf = "git://github.com/github"
 
 [url "git@github.com:"]
 
-	pushInsteadOf = "https://github.com/"
-	pushInsteadOf = "github:"
-	pushInsteadOf = "git://github.com/"
+  pushInsteadOf = "https://github.com/"
+  pushInsteadOf = "github:"
+  pushInsteadOf = "git://github.com/"
 
 [url "git://github.com/"]
 
-	insteadOf = "github:"
+  insteadOf = "github:"
 
 [url "git@gist.github.com:"]
 
-	insteadOf = "gst:"
-	pushInsteadOf = "gist:"
-	pushInsteadOf = "git://gist.github.com/"
+  insteadOf = "gst:"
+  pushInsteadOf = "gist:"
+  pushInsteadOf = "git://gist.github.com/"
 
 [url "git://gist.github.com/"]
 
-	insteadOf = "gist:"
+  insteadOf = "gist:"
 
 [commit]
 
-	gpgsign = true
+  gpgsign = true
 
 [pull]
-	rebase = true
+  rebase = true
 
 [user]
-	signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQChQ+Qy6NOvnCx7xwIqCXFRrjF1zXE513M25z0dlIFwRIb+XjMmJM1DvLXGZ29yd/1xwQ9DGdbOdJoc38MaTRFXc6pyM9wgjkj73FgPT95B98RxDIsjWZUT4jcc34FB0h/Ytu1KDEYvTil2hGJVZmSLk51LyfNNPj+6Ub/jKlsJCY0HxbeGwgVjqxEHB33SIZSxVHBdjdhOoTcdqKyzSXteE+RYP7w5T9gzxXnRnVA0S2pnMNgKXC0exdRFn/8GHIibQmpka5326to+W0bqy2irzx1zl71pwAezi8dVx4Tb4YE8+8ayZAx9Pyre7/HuCHFJE7DlZ7E+LNQJrYoyhs3swtU2H9KFVekgjKLgfZoT2rXsnSQDXHKjqv3o4t8HdelFgKCuWwtmYEkUFNLyYSgFihe9AR/Fa3KPpsqySxu2P41ec54BbGXj+sm+vAx12TmPRvqiiwRontkgdpOwxrJ+ZAwD0hhgyhLnsqIo5NnOqA4TicOigAtRb8WrqFB8KVE=
-	name = Enes Sadık Özbek
-	email = es.ozbek@outlook.com
+  signingkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQChQ+Qy6NOvnCx7xwIqCXFRrjF1zXE513M25z0dlIFwRIb+XjMmJM1DvLXGZ29yd/1xwQ9DGdbOdJoc38MaTRFXc6pyM9wgjkj73FgPT95B98RxDIsjWZUT4jcc34FB0h/Ytu1KDEYvTil2hGJVZmSLk51LyfNNPj+6Ub/jKlsJCY0HxbeGwgVjqxEHB33SIZSxVHBdjdhOoTcdqKyzSXteE+RYP7w5T9gzxXnRnVA0S2pnMNgKXC0exdRFn/8GHIibQmpka5326to+W0bqy2irzx1zl71pwAezi8dVx4Tb4YE8+8ayZAx9Pyre7/HuCHFJE7DlZ7E+LNQJrYoyhs3swtU2H9KFVekgjKLgfZoT2rXsnSQDXHKjqv3o4t8HdelFgKCuWwtmYEkUFNLyYSgFihe9AR/Fa3KPpsqySxu2P41ec54BbGXj+sm+vAx12TmPRvqiiwRontkgdpOwxrJ+ZAwD0hhgyhLnsqIo5NnOqA4TicOigAtRb8WrqFB8KVE=
+  name = Enes Sadık Özbek
+  email = es.ozbek@outlook.com
 
 [gpg "ssh"]
-	allowedSignersFile = /home/pi/.ssh/allowed_signers
+  allowedSignersFile = /home/pi/.ssh/allowed_signers
 
 [core]
-	editor = nano
+  editor = nano
 
 [gpg]
-	format = ssh
+  format = ssh
