@@ -66,6 +66,7 @@ ln -sf $BASE_DIR/.nanorc $HOME_DIR/.nanorc
 ln -sf $BASE_DIR/.zshrc $HOME_DIR/.zshrc
 ln -sf $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
 ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
+ln -sf $BASE_DIR/.minttyrc $HOME_DIR/.minttyrc
 
 # Install oh-my-zsh and related stuff
 if [ ! -d $HOME_DIR/.oh-my-zsh ]; then
