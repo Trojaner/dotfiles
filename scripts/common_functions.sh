@@ -2,7 +2,6 @@
 
 APT_PACKAGES_UPDATED=false
 SUDO_KEEPALIVE_STARTED=false
-SELF_PID=$$
 
 __assert_zsh() {
   local shell_file=$(basename $SHELL)
@@ -22,7 +21,7 @@ __assert_parameter() {
   local arg=$1
 
   if [ -z $arg ]; then
-    echo "Illegal number of parameters passed to ${funcstack[2]}"
+    echo "Illegal number of parameters passed to ${funcstack[2]}" >&2
     return 1 2>/dev/null
     exit 1
   fi
@@ -31,19 +30,9 @@ __assert_parameter() {
 }
 
 # Run a command with sudo, ignores sudo command if already root and keeps sudo session alive
-# Dont forget to call kill_sudo_loop
 run_with_sudo() {
   __assert_zsh # setopt below is zsh-specific
   __assert_parameter "$1"
-
-  local caller_pid=$PPID
-  if [ $SELF_PID = $caller_pid ]; then
-    echo "not ok"
-    exit 1
-  fi
-
-  echo "ok"
-  return
 
   local cmd_args=("$@")
 
