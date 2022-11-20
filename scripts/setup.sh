@@ -50,6 +50,7 @@ ensure_packages_exist fd-find fzf
 echo "Installing utilities"
 ensure_packages_exist nano tmux tmuxinator unzip
 
+touch ~/.nanorc
 { curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
 mkdir -p ~/.nano/backup
 
