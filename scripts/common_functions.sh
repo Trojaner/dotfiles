@@ -45,7 +45,7 @@ run_with_sudo() {
   if [ "$SUDO_KEEPALIVE_STARTED" != true ]; then
     # Keeps the sudo session alive so we wont have to re-enter password if something takes too long
     setopt local_options hup
-    (while true; do sudo -n true; sleep 5; kill -0 "$$" || exit; done &2>/dev/null) &
+    (while true; do sudo -n true; sleep 5; kill -0 "$$" || exit; done &>/dev/null) &
     SUDO_KEEPALIVE_STARTED=true
   fi
 
@@ -120,7 +120,7 @@ ensure_packages_exist() {
   return 0
 }
 
-append_line_to_file() {
+append_to_file() {
   __assert_zsh # array last element used in $file below is zsh-specific
   __assert_parameter "$2"
 

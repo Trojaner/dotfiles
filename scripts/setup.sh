@@ -21,19 +21,19 @@ if [ ! -d "$BASE_DIR/.git" ]; then
   echo "Downloading latest version..."
   git init
   git remote add origin https://github.com/Trojaner/dotfiles.git
-  git fetch
+  git fetch >/dev/null
   git reset origin/main >/dev/null
   git checkout -t origin/main >/dev/null
   source $HOME_DIR/install.sh
   exit 0
 else
   # Check if newer version is available
-  git checkout main >/dev/null
-  git fetch
+  git checkout main >/dev/null 2>/dev/null
+  git fetch >/dev/null
 
   if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]; then
     echo "Newer version found, downloading..."
-    git pull origin main
+    git pull origin main >/dev/null
     source $HOME_DIR/install.sh
     exit 0
   else
@@ -50,7 +50,7 @@ ensure_packages_exist fd-find fzf
 echo "Installing utilities"
 ensure_packages_exist nano tmux tmuxinator unzip
 
-curl https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l >/dev/null
+{ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
 mkdir -p ~/.nano/backup
 
 # Install fig (?)
@@ -69,24 +69,27 @@ ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
 ln -sf $BASE_DIR/.minttyrc $HOME_DIR/.minttyrc
 
 # Install oh-my-zsh and related stuff
+echo "Installing oh-my-zsh"
 if [ ! -d $HOME_DIR/.oh-my-zsh ]; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  { curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | /bin/bash -s -- "" --unattended } >/dev/null
 fi
 
-curl -sfL git.io/antibody | run_with_sudo sh -s - -b /usr/local/bin
-git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions
+{ curl -fsSL git.io/antibody | sudo sh -s - -b /usr/local/bin } >/dev/null
+git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions &>/dev/null || true
 
 # Import SSH public key
 echo "Adding SSH public key"
 mkdir -p $HOME_DIR/.ssh/
-append_to_file (cat $BASE_DIR/public_keys/esozbek_id.pub) $HOME_DIR/.ssh/authorized_keys
-echo "es.ozbek@outlook.com $(cat $BASE_DIR/public_keys/esozbek_id.pub)" "$HOME_DIR/.ssh/allowed_signers"
+
+PUBLIC_KEY=
+append_to_file $(cat $BASE_DIR/public_keys/esozbek_id.pub) $HOME_DIR/.ssh/authorized_keys
 
 echo "Adding SSH private key"
 PRIVATE_KEY_PATH=$HOME_DIR/.ssh/esozbek_id
 
 echo "Add key to following directory: $PRIVATE_KEY_PATH"
-read -n 1 -p "Press any button to continue."
+echo "Press any button to continue."
+read -n 1
 
 if [ ! -f $PRIVATE_KEY_PATH ]; then
   echo "Private key not found; skipping ssh agent private key import"
@@ -94,7 +97,7 @@ else
   eval `ssh-agent -s`
   ssh-add $PRIVATE_KEY_PATH
   chmod 400 $HOME_DIR/.ssh/esozbek_id
-  append_to_file (echo "IdentityFile $PRIVATE_KEY_PATH") "$HOME_DIR/.ssh/config"
+  append_to_file $(echo "IdentityFile $PRIVATE_KEY_PATH") "$HOME_DIR/.ssh/config"
   chmod 600 $HOME_DIR/.ssh/config
 fi
 
