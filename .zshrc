@@ -169,3 +169,7 @@ export GO111MODULE=on
 # source <(kubectl completion zsh)
 # alias kubectl=kubecolor
 # compdef kubecolor=kubectl
+
+# Import ssh private key
+eval `ssh-agent -s` >/dev/null && \
+  ssh-add -q ~/.ssh/esozbek_id >/dev/null
