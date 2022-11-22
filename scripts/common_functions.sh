@@ -8,6 +8,7 @@ __assert_zsh() {
 
   if [ $shell_file != 'zsh' ]; then
     echo "ERR: Please run script with zsh." >&2
+    return 1 2>/dev/null
     exit 1
   fi
 
