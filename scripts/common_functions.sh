@@ -130,3 +130,42 @@ append_to_file() {
 
   grep -qF "$line" "$file" 2>/dev/null || echo "$line" | tee --append "$file" >/dev/null
 }
+
+run_remote_script() {
+  __assert_parameter $1
+
+  local quiet=false
+  local shell='sh'
+  local OPTIND arg
+
+  while getopts "qs:" arg; do
+    case $arg in
+      q) quiet=true ;;
+      s) shell=$OPTARG ;;
+    esac
+  done
+
+  shift "$((OPTIND - 1))"
+
+  local script_url=$1
+  local script_args=""
+
+  shift 1
+
+  if [ "$1" = '--' ]; then
+    shift 1
+    script_args="${*[@]}"
+  fi
+
+  if [ -n "$script_args" ]; then
+    echo "> $script_url $script_args"
+  else
+    echo "> $script_url"
+  fi
+
+  if [ $quiet = true ]; then
+    { curl -fsSL "$script_url" | "$shell" -s -- "$script_args" } >/dev/null
+  else
+    { curl -fsSL "$script_url" | "$shell" -s -- "$script_args" }
+  fi
+}
