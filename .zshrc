@@ -72,14 +72,12 @@ ZSH_THEME="agnoster"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   adb
-  # aws
+  aws
   colored-man-pages
   colorize
   command-not-found
   docker
-  docker-compose # todo: remove? docker-comp√ose is deprecated
   dotnet
-  emoji-clock
   extract
   fastfile
   fd
@@ -89,9 +87,9 @@ plugins=(
   gradle
   # helm -- causes address already in use error on multiple shells
   history
-  httpie
+  # httpie
   istioctl
-  kn
+  # kn
   kubectl
   kubectx
   kops
@@ -159,25 +157,18 @@ setopt GLOB_DOTS
 # Set nano as default editor
 export EDITOR='nano'
 
-# For kubectx/antibody
-autoload -U compinit && compinit
-
+# Fix something with go
 export GO111MODULE=on
-
-# kubecolor
-# source <(kubectl completion zsh)
-# alias kubectl=kubecolor
-# compdef kubecolor=kubectl
 
 # Import ssh private key
 eval `ssh-agent -s` >/dev/null && \
-  ssh-add -q ~/.ssh/esozbek_id >/dev/null
+  ssh-add -q ~/.ssh/id_rsa >/dev/null
 
 # Windows-like keyboard behavior
 r-delregion() {
   if ((REGION_ACTIVE)) then
      zle kill-region
-  else 
+  else
     local widget_name=$1
     shift
     zle $widget_name -- $@

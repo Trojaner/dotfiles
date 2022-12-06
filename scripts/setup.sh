@@ -86,7 +86,7 @@ PUBLIC_KEY=
 append_to_file $(cat $BASE_DIR/public_keys/esozbek_id.pub) $HOME_DIR/.ssh/authorized_keys
 
 echo "Adding SSH private key"
-PRIVATE_KEY_PATH=$HOME_DIR/.ssh/esozbek_id
+PRIVATE_KEY_PATH=$HOME_DIR/.ssh/id_rsa
 
 echo "Add key to following directory: $PRIVATE_KEY_PATH"
 echo "Press any button to continue."
@@ -97,7 +97,7 @@ if [ ! -f $PRIVATE_KEY_PATH ]; then
 else
   eval `ssh-agent -s`
   ssh-add $PRIVATE_KEY_PATH
-  chmod 400 $HOME_DIR/.ssh/esozbek_id
+  chmod 400 $HOME_DIR/.ssh/id_rsa
   append_to_file $(echo "IdentityFile $PRIVATE_KEY_PATH") "$HOME_DIR/.ssh/config"
   chmod 600 $HOME_DIR/.ssh/config
 fi
