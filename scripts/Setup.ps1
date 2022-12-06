@@ -13,3 +13,5 @@ New-Item -Path $PROFILE -ItemType SymbolicLink -Value (Resolve-Path "..\Microsof
 . $PROFILE
 
 oh-my-posh font install Hack
+
+iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
