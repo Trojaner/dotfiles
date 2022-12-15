@@ -156,6 +156,7 @@ setopt GLOB_DOTS
 
 # Set nano as default editor
 export EDITOR='nano'
+export KUBE_EDITOR=nano
 
 # Fix something with go
 export GO111MODULE=on
@@ -228,3 +229,9 @@ for key     kcap   seq        mode   widget (
   zle -N key-$key
   bindkey ${terminfo[$kcap]-$seq} key-$key
 }
+
+local zsh_rc_local="$HOME/.zshrc-local";
+
+if [ -f "$zsh_rc_local" ]; then
+  source "$zsh_rc-local"
+fi
