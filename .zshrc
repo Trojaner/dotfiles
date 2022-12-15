@@ -230,8 +230,8 @@ for key     kcap   seq        mode   widget (
   bindkey ${terminfo[$kcap]-$seq} key-$key
 }
 
-local zsh_rc_local="$HOME/.zshrc-local";
+local zsh_rc_local="$HOME/.zshrc_local";
 
 if [ -f "$zsh_rc_local" ]; then
-  source "$zsh_rc-local"
+  source "$zsh_rc_local"
 fi
