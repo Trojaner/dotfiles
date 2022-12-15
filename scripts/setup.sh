@@ -62,13 +62,6 @@ mkdir -p ~/.nano/backup
 echo "Linking dotfiles"
 mkdir -p $HOME_DIR/.zsh
 
-ln -sf $BASE_DIR/scripts/common_functions.sh $HOME_DIR/.zsh/common_functions.sh
-ln -sf $BASE_DIR/.nanorc $HOME_DIR/.nanorc
-ln -sf $BASE_DIR/.zshrc $HOME_DIR/.zshrc
-ln -sf $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
-ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
-ln -sf $BASE_DIR/.minttyrc $HOME_DIR/.minttyrc
-
 # Install oh-my-zsh and related stuff
 echo "Installing oh-my-zsh"
 if [ ! -d $HOME_DIR/.oh-my-zsh ]; then
@@ -77,6 +70,13 @@ fi
 
 { curl -fsSL git.io/antibody | sudo sh -s - -b /usr/local/bin } >/dev/null
 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions &>/dev/null || true
+
+ln -sf $BASE_DIR/scripts/common_functions.sh $HOME_DIR/.zsh/common_functions.sh
+ln -sf $BASE_DIR/.nanorc $HOME_DIR/.nanorc
+ln -sf $BASE_DIR/.zshrc $HOME_DIR/.zshrc
+ln -sf $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
+ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
+ln -sf $BASE_DIR/.minttyrc $HOME_DIR/.minttyrc
 
 # Import SSH public key
 echo "Adding SSH public key"
@@ -101,6 +101,9 @@ else
   append_to_file $(echo "IdentityFile $PRIVATE_KEY_PATH") "$HOME_DIR/.ssh/config"
   chmod 600 $HOME_DIR/.ssh/config
 fi
+
+echo "Removing sudo requirement"
+echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | run_with_sudo tee /etc/sudoers.d/$USER
 
 echo "Done!"
 exec zsh
