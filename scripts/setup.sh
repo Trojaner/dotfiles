@@ -77,6 +77,7 @@ ln -sf $BASE_DIR/.zshrc $HOME_DIR/.zshrc
 ln -sf $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
 ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
 ln -sf $BASE_DIR/.minttyrc $HOME_DIR/.minttyrc
+ln -sf $BASE_DIR/.tmux.conf $HOME_DIR/.tmux.conf
 
 # Import SSH public key
 echo "Adding SSH public key"

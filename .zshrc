@@ -150,6 +150,7 @@ source ~/.zsh/common_functions.sh
 
 # Always list all files
 alias ls='ls --color=auto'
+alias tmux='tmux -u'
 
 # Include hidden files in GLOB
 setopt GLOB_DOTS
