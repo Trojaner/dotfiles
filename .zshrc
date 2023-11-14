@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="agnoster"
+ZSH_THEME="cloud"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -157,6 +157,7 @@ setopt GLOB_DOTS
 
 # Set nano as default editor
 export EDITOR='nano'
+export VISUAL="$EDITOR"
 export KUBE_EDITOR=nano
 
 # Fix something with go
@@ -236,3 +237,23 @@ local zsh_rc_local="$HOME/.zshrc_local";
 if [ -f "$zsh_rc_local" ]; then
   source "$zsh_rc_local"
 fi
+
+# Set theme
+echo -en "\e]P0000000" #black
+echo -en "\e]P1FF0000" #lightred
+echo -en "\e]P200FF00" #lightgreen
+echo -en "\e]P3FFFF00" #yellow
+echo -en "\e]P40000FF" #lightblue
+echo -en "\e]P5FF00FF" #lightmagenta
+echo -en "\e]P600FFFF" #lightcyan
+echo -en "\e]P7FFFFFF" #highwhite
+echo -en "\e]P8808080" #grey
+echo -en "\e]P9800000" #red
+echo -en "\e]PA008000" #green
+echo -en "\e]PB808000" #brown
+echo -en "\e]PC000080" #blue
+echo -en "\e]PD800080" #magenta
+echo -en "\e]PE008080" #cyan
+echo -en "\e]PFC0C0C0" #white
+
+printf %b '\e]11;#300A24\a'
