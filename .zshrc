@@ -38,7 +38,7 @@ ZSH_THEME="cloud"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -61,6 +61,9 @@ ZSH_THEME="cloud"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
 # HIST_STAMPS="mm/dd/yyyy"
+
+ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
+ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -112,6 +115,7 @@ plugins=(
   z
   zsh-interactive-cd
   zsh-navigation-tools
+  zsh-tab-title
 )
 
 # zsh-completions
@@ -159,6 +163,9 @@ setopt GLOB_DOTS
 export EDITOR='nano'
 export VISUAL="$EDITOR"
 export KUBE_EDITOR=nano
+
+# Fix GPG TTY
+export GPG_TTY=$(tty)
 
 # Fix something with go
 export GO111MODULE=on
@@ -256,4 +263,17 @@ echo -en "\e]PD800080" #magenta
 echo -en "\e]PE008080" #cyan
 echo -en "\e]PFC0C0C0" #white
 
+# Set background color
 printf %b '\e]11;#300A24\a'
+
+keep_current_path() {
+  local prompt_pwd="$PWD"
+
+  if [ ! -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
+    PROMPT_PWD="$(wslpath -w "$prompt_pwd")"
+  fi
+
+  printf "\e]9;9;%s\e\\" "prompt_pwd"
+}
+
+precmd_functions+=(keep_current_path)

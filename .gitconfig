@@ -76,7 +76,3 @@
 [core]
 
   editor = nano
-
-[gpg]
-
-  format = ssh

@@ -70,6 +70,7 @@ fi
 
 { curl -fsSL git.io/antibody | sudo sh -s - -b /usr/local/bin } >/dev/null
 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions &>/dev/null || true
+git clone https://github.com/trystan2k/zsh-tab-title ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-tab-title &>/dev/null || true
 
 ln -sf $BASE_DIR/scripts/common_functions.sh $HOME_DIR/.zsh/common_functions.sh
 ln -sf $BASE_DIR/.nanorc $HOME_DIR/.nanorc
