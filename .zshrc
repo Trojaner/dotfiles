@@ -269,7 +269,7 @@ printf %b '\e]11;#300A24\a'
 keep_current_path() {
   local prompt_pwd="$PWD"
 
-  if [ ! -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
+  if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
     PROMPT_PWD="$(wslpath -w "$prompt_pwd")"
   fi
 
