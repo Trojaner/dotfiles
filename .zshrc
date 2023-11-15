@@ -158,6 +158,7 @@ alias tmux='tmux -u'
 
 # Include hidden files in GLOB
 setopt GLOB_DOTS
+setopt NO_HUP
 
 # Set nano as default editor
 export EDITOR='nano'
