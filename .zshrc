@@ -267,13 +267,10 @@ echo -en "\e]PFC0C0C0" #white
 printf %b '\e]11;#300A24\a'
 
 keep_current_path() {
-  local prompt_pwd="$PWD"
-
   if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
-    PROMPT_PWD="$(wslpath -w "$prompt_pwd")"
+    printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
   fi
 
-  printf "\e]9;9;%s\e\\" "prompt_pwd"
 }
 
 precmd_functions+=(keep_current_path)
