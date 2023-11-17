@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -64,6 +64,7 @@ DISABLE_AUTO_TITLE="true"
 
 ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
 ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
+ZSH_TMUX_UNICODE=true
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -163,17 +164,13 @@ setopt NO_HUP
 # Set nano as default editor
 export EDITOR='nano'
 export VISUAL="$EDITOR"
-export KUBE_EDITOR=nano
+export KUBE_EDITOR="$EDITOR"
 
 # Fix GPG TTY
 export GPG_TTY=$(tty)
 
 # Fix something with go
 export GO111MODULE=on
-
-# Import ssh private key
-eval `ssh-agent -s` >/dev/null && \
-  ssh-add -q ~/.ssh/id_rsa >/dev/null
 
 # Windows-like keyboard behavior
 r-delregion() {
@@ -240,7 +237,7 @@ for key     kcap   seq        mode   widget (
   bindkey ${terminfo[$kcap]-$seq} key-$key
 }
 
-local zsh_rc_local="$HOME/.zshrc_local";
+local zsh_rc_local="$HOME/.zshrc_local"
 
 if [ -f "$zsh_rc_local" ]; then
   source "$zsh_rc_local"

@@ -48,7 +48,7 @@ echo "Installing packages for zsh extensions"
 ensure_packages_exist fd-find fzf
 
 echo "Installing utilities"
-ensure_packages_exist nano tmux tmuxinator unzip
+ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr
 
 touch ~/.nanorc
 { curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
@@ -72,6 +72,9 @@ fi
 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions &>/dev/null || true
 git clone https://github.com/trystan2k/zsh-tab-title ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-tab-title &>/dev/null || true
 
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+python3 -m pip install --user libtmux
+
 ln -sf $BASE_DIR/scripts/common_functions.sh $HOME_DIR/.zsh/common_functions.sh
 ln -sf $BASE_DIR/.nanorc $HOME_DIR/.nanorc
 ln -sf $BASE_DIR/.zshrc $HOME_DIR/.zshrc
@@ -79,6 +82,7 @@ ln -sf $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
 ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
 ln -sf $BASE_DIR/.minttyrc $HOME_DIR/.minttyrc
 ln -sf $BASE_DIR/.tmux.conf $HOME_DIR/.tmux.conf
+ln -sf $BASE_DIR/config/htop/htoprc $HOME_DIR/.config/htop/htoprc
 
 # Import SSH public key
 echo "Adding SSH public key"

@@ -15,3 +15,5 @@ New-Item -Path $PROFILE -ItemType SymbolicLink -Value (Resolve-Path "..\Microsof
 oh-my-posh font install Hack
 
 iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+
+winget install magic-wormhole
