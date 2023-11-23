@@ -1,20 +1,16 @@
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+source ~/.zsh/common_functions.sh
 
-# Path to your oh-my-zsh installation.
+PATH_DIRECTORIES=(
+  "$HOME/bin"
+  "$HOME/.local/bin"
+  "$HOME/.cargo/bin"
+  "/usr/local/bin"
+)
+
+append_path "${PATH_DIRECTORIES[@]}"
+
 export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="cloud"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -23,13 +19,8 @@ ZSH_THEME="cloud"
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
+zstyle ':omz:update' mode auto      # update automatically without asking
+zstyle ':omz:update' frequency 7
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
@@ -41,13 +32,13 @@ ZSH_THEME="cloud"
 DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # You can also set it to another string to have that shown instead of the default red dots.
 # e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
 # Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -66,14 +57,6 @@ ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
 ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
 ZSH_TMUX_UNICODE=true
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 plugins=(
   adb
   aws
@@ -120,41 +103,24 @@ plugins=(
 )
 
 # zsh-completions
+keep_current_path() {
+  if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
+    printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
+  fi
+
+}
+
+precmd_functions+=(keep_current_path)
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+export LANG=en_US.UTF-8
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# Include common functions
-source ~/.zsh/common_functions.sh
-
 # Always list all files
-alias ls='ls --color=auto'
+alias ls='ls -lah --color=auto'
 alias tmux='tmux -u'
 
 # Include hidden files in GLOB
@@ -237,12 +203,6 @@ for key     kcap   seq        mode   widget (
   bindkey ${terminfo[$kcap]-$seq} key-$key
 }
 
-local zsh_rc_local="$HOME/.zshrc_local"
-
-if [ -f "$zsh_rc_local" ]; then
-  source "$zsh_rc_local"
-fi
-
 # Set theme
 echo -en "\e]P0000000" #black
 echo -en "\e]P1FF0000" #lightred
@@ -264,11 +224,8 @@ echo -en "\e]PFC0C0C0" #white
 # Set background color
 printf %b '\e]11;#300A24\a'
 
-keep_current_path() {
-  if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
-    printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
-  fi
+local zsh_rc_local="$HOME/.zshrc_local"
 
-}
-
-precmd_functions+=(keep_current_path)
+if [ -f "$zsh_rc_local" ]; then
+  source "$zsh_rc_local"
+fi
