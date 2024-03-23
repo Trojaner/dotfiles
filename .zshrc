@@ -121,8 +121,9 @@ export LANG=en_US.UTF-8
 
 # Always list all files
 alias ls='ls -lah --color=auto'
+alias python='python3'
 alias tmux='tmux -u'
-
+alias venv='. venv/bin/activate'
 # Include hidden files in GLOB
 setopt GLOB_DOTS
 setopt NO_HUP
