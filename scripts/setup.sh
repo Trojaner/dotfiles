@@ -33,7 +33,7 @@ else
 
   if [ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]; then
     echo "Newer version found, downloading..."
-    git pull origin main >/dev/null
+    git pull origin main --autostash >/dev/null
     source $HOME_DIR/install.sh
     exit 0
   else
@@ -48,7 +48,7 @@ echo "Installing packages for zsh extensions"
 ensure_packages_exist fd-find fzf
 
 echo "Installing utilities"
-ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr
+ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip htop
 
 touch ~/.nanorc
 { curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
@@ -72,8 +72,14 @@ fi
 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions &>/dev/null || true
 git clone https://github.com/trystan2k/zsh-tab-title ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-tab-title &>/dev/null || true
 
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+if [ ! -d $HOME_DIR/.tmux/plugins/tpm ]; then
+  git clone https://github.com/tmux-plugins/tpm $HOME_DIR/.tmux/plugins/tpm
+else
+  git -C $HOME_DIR/.tmux/plugins/tpm pull
+fi
+
 python3 -m pip install --user libtmux
+mkdir -p $HOME_DIR/.config/htop
 
 ln -sf $BASE_DIR/scripts/common_functions.sh $HOME_DIR/.zsh/common_functions.sh
 ln -sf $BASE_DIR/.nanorc $HOME_DIR/.nanorc
