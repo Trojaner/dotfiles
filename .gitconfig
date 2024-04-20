@@ -76,3 +76,11 @@
 [core]
 
   editor = nano
+
+[gpg]
+
+  format = ssh
+
+[credential]
+
+  helper = store
