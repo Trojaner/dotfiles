@@ -115,6 +115,7 @@ fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 source $ZSH/oh-my-zsh.sh
 export LANG=en_US.UTF-8
+export DOCKER_BUILDKIT=1
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
