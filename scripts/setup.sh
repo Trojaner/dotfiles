@@ -57,7 +57,6 @@ mkdir -p ~/.nano/backup
 # Install fig (?)
 # curl -fSsL https://repo.fig.io/scripts/install-headless.sh | bash
 
-
 # Link files
 echo "Linking dotfiles"
 mkdir -p $HOME_DIR/.zsh
@@ -78,7 +77,7 @@ else
   git -C $HOME_DIR/.tmux/plugins/tpm pull
 fi
 
-python3 -m pip install --user libtmux
+python3 -m pip install --user libtmux tmuxp s-tui gpustat
 mkdir -p $HOME_DIR/.config/htop
 
 ln -sf $BASE_DIR/scripts/common_functions.sh $HOME_DIR/.zsh/common_functions.sh
