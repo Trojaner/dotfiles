@@ -1,6 +1,6 @@
 # $POSH_CONFIG=(Join-Path $HOME "oh-my-posh.json")
 
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH/jandedobbeleer.omp.json" | Invoke-Expression
+oh-my-posh init pwsh --config "$HOME\Documents\PowerShell\posh-theme.json" | Invoke-Expression
 
 
 Import-Module PSReadLine
