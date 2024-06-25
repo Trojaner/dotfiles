@@ -61,7 +61,8 @@
 
 [pull]
 
-  rebase = true
+	ff = true
+	rebase = true
 
 [user]
 
@@ -80,3 +81,6 @@
 [credential]
 
   helper = store
+
+[merge]
+	ff = only
