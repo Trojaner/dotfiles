@@ -59,7 +59,6 @@ export ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
 export ZSH_TMUX_UNICODE=true
 
 plugins=(
-  adb
   aws
   colored-man-pages
   colorize
@@ -68,7 +67,6 @@ plugins=(
   dotnet
   extract
   fastfile
-  fd
   # fig -- commercial
   # gcloud
   gh
