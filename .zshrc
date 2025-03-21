@@ -124,7 +124,7 @@ alias ls='ls -lah --color=auto'
 alias python='python3'
 alias tmux='tmux -u'
 alias venv='. venv/bin/activate'
-alias rsync='rsync -Prh --info=progress2 --no-i-r'
+alias rsync='rsync -Ph --info=progress2 --no-i-r'
 
 # Include hidden files in GLOB
 setopt GLOB_DOTS
