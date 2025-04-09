@@ -232,3 +232,7 @@ local zsh_rc_local="$HOME/.zshrc_local"
 if [ -f "$zsh_rc_local" ]; then
   source "$zsh_rc_local"
 fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
