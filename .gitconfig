@@ -85,3 +85,7 @@
 [merge]
 
   ff = only
+
+[push]
+
+  autoSetupRemote = true
