@@ -79,6 +79,7 @@ fi
 
 python3 -m pip install --user libtmux tmuxp s-tui gpustat
 mkdir -p $HOME_DIR/.config/htop
+mkdir -p $HOME_DIR/.tmux
 
 ln -sf $BASE_DIR/scripts/common_functions.sh $HOME_DIR/.zsh/common_functions.sh
 ln -sf $BASE_DIR/.nanorc $HOME_DIR/.nanorc
@@ -88,6 +89,7 @@ ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
 ln -sf $BASE_DIR/.minttyrc $HOME_DIR/.minttyrc
 ln -sf $BASE_DIR/.tmux.conf $HOME_DIR/.tmux.conf
 ln -sf $BASE_DIR/.config/htop/htoprc $HOME_DIR/.config/htop/htoprc
+ln -sf $BASE_DIR/show-tmux-popup.sh $HOME_DIR/.tmux/show-tmux-popup.sh
 
 # Import SSH public key
 echo "Adding SSH public key"
