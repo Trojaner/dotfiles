@@ -1,6 +1,7 @@
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Confirm
 
 winget install JanDeDobbeleer.OhMyPosh -s winget
+winget install --id=direnv.direnv  -e
 
 Install-Module -Name posh-git -Scope CurrentUser -Confirm
 Install-Module -Name PSReadLine -Scope CurrentUser -Confirm

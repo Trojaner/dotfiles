@@ -6,6 +6,7 @@ oh-my-posh init pwsh --config "$HOME\Documents\PowerShell\posh-theme.json" | Inv
 Import-Module PSReadLine
 Import-Module Get-ChildItemColor
 Import-Module Terminal-Icons
+Import-Module -Name Microsoft.WinGet.CommandNotFound
 
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
@@ -22,3 +23,5 @@ if (Test-Path alias:WGet) {
 
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 Set-PSReadlineKeyHandler -Key Tab -Function Complete
+
+Invoke-Expression "$(direnv hook pwsh)"
