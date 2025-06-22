@@ -24,4 +24,4 @@ if (Test-Path alias:WGet) {
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 Set-PSReadlineKeyHandler -Key Tab -Function Complete
 
-Invoke-Expression "$(direnv hook pwsh)"
+# Invoke-Expression "$(direnv hook pwsh)"
