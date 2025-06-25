@@ -99,24 +99,30 @@ PUBLIC_KEY=
 append_to_file $(cat $BASE_DIR/public_keys/esozbek_id.pub) $HOME_DIR/.ssh/authorized_keys
 
 echo "Adding SSH private key"
-PRIVATE_KEY_PATH=$HOME_DIR/.ssh/id_rsa
+SSH_PRIVATE_KEY_PATH=$HOME_DIR/.ssh/id_rsa
 
-echo "Add key to following directory: $PRIVATE_KEY_PATH"
+echo "Add key to following directory: $SSH_PRIVATE_KEY_PATH"
 echo "Press any button to continue."
 read -n 1
 
-if [ ! -f $PRIVATE_KEY_PATH ]; then
+if [ ! -f $SSH_PRIVATE_KEY_PATH ]; then
   echo "Private key not found; skipping ssh agent private key import"
 else
   eval `ssh-agent -s`
-  ssh-add $PRIVATE_KEY_PATH
+  ssh-add $SSH_PRIVATE_KEY_PATH
   chmod 400 $HOME_DIR/.ssh/id_rsa
-  append_to_file $(echo "IdentityFile $PRIVATE_KEY_PATH") "$HOME_DIR/.ssh/config"
+  append_to_file $(echo "IdentityFile $SSH_PRIVATE_KEY_PATH") "$HOME_DIR/.ssh/config"
   chmod 600 $HOME_DIR/.ssh/config
 fi
 
 echo "Removing sudo requirement"
 echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | run_with_sudo tee /etc/sudoers.d/$USER
+
+echo ""
+echo ""
+echo "**Do not forget to import GPG signing key 30D309B77EDBEE37 if "git commit" is needed on this device**"
+echo ""
+echo ""
 
 echo "Done!"
 exec zsh
