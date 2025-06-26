@@ -85,6 +85,11 @@
 [merge]
 
   ff = only
+  autostash = true
+
+[rebase]
+
+  autostash = true
 
 [push]
 
@@ -92,5 +97,5 @@
 
 [fetch]
 
-	prune = false
+  prune = false
 
