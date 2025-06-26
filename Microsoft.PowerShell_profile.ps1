@@ -7,6 +7,7 @@ Import-Module PSReadLine
 Import-Module Get-ChildItemColor
 Import-Module Terminal-Icons
 Import-Module -Name Microsoft.WinGet.CommandNotFound
+Import-Module -Name CompletionPredictor
 
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
@@ -22,6 +23,15 @@ if (Test-Path alias:WGet) {
 }
 
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
-Set-PSReadlineKeyHandler -Key Tab -Function Complete
+Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 
+Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+        dotnet complete --position $cursorPosition "$commandAst" | ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        }
+}
+
+# Set-PSReadLineKeyHandler -Chord "Tab" -Function ForwardWord
 # Invoke-Expression "$(direnv hook pwsh)"
