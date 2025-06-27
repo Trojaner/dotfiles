@@ -108,11 +108,54 @@ precmd_functions+=(keep_current_path)
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 source $ZSH/oh-my-zsh.sh
+source <(fzf --zsh)
+
 export LANG=en_US.UTF-8
 export DOCKER_BUILDKIT=1
+export ARCHFLAGS="-arch $(uname --machine)"
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+export NO_ALBUMENTATIONS_UPDATE=1
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  if [ -f "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+
+  if [ -f "/opt/homebrew/bin/pyenv" ]; then
+    eval "$(pyenv init -)"
+  fi
+fi
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  export XAUTHORITY=$HOME/.Xauthority
+  export LIBGL_ALWAYS_INDIRECT=1
+  export XCURSOR_SIZE=64
+  export LIBRARY_PATH=/lib/x86_64-linux-gnu${LIBRARY_PATH:+:${LIBRARY_PATH}}
+fi
+
+if [ -d "/usr/local/cuda" ]; then
+  export CUDA_HOME=/usr/local/cuda
+  export CUDA_PATH=/usr/local/cuda
+  export CUDADIR=/usr/local/cuda
+  export CUDA_CUDA_LIB=/usr/lib/x86_64-linux-gnu/libcuda.so
+  export CUDA_INSTALL_PATH=/usr/local/cuda
+  export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+  export CPATH=/usr/local/cuda/include${CPATH:+:${CPATH}}
+  export LIBRARY_PATH=/usr/local/cuda/lib64${LIBRARY_PATH:+:${LIBRARY_PATH}}
+  export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+fi
+
+if [ -d "/usr/lib/x86_64-linux-gnu/openblas" ]; then
+  export OPENBLASDIR=/usr/lib/x86_64-linux-gnu/openblas
+fi
+
+if [ -f "/usr/lib/x86_64-linux-gnu/libnccl.so" ]; then
+  export NCCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libnccl.so
+fi
+
+if [ -f "/usr/bin/ffmpeg" ]; then
+  export FFMPEG_PATH=/usr/bin/ffmpeg
+fi
 
 # Always list all files
 alias ls='ls -lah --color=auto'
@@ -127,9 +170,10 @@ setopt GLOB_DOTS
 setopt NO_HUP
 
 # Set nano as default editor
-export EDITOR='nano'
+export EDITOR=nano
 export VISUAL="$EDITOR"
 export KUBE_EDITOR="$EDITOR"
+export GIT_EDITOR="$EDITOR"
 
 # Fix GPG TTY
 export GPG_TTY=$(tty)
