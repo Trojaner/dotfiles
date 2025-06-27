@@ -112,7 +112,7 @@ source <(fzf --zsh)
 
 export LANG=en_US.UTF-8
 export DOCKER_BUILDKIT=1
-export ARCHFLAGS="-arch $(uname --machine)"
+export ARCHFLAGS="-arch $(uname -m)"
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 export NO_ALBUMENTATIONS_UPDATE=1
 
