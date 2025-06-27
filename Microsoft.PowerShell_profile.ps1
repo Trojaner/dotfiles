@@ -25,6 +25,8 @@ if (Test-Path alias:WGet) {
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+Set-PSReadLineOption -PredictionViewStyle ListView
+Set-PSReadLineOption -EditMode Windows
 
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
