@@ -65,11 +65,9 @@ plugins=(
   # fig -- commercial
   # gcloud
   gh
-  gradle
   # helm -- causes address already in use error on multiple shells
   history
   # httpie
-  istioctl
   # kn
   kubectl
   kubectx
@@ -112,9 +110,21 @@ source <(fzf --zsh)
 
 export LANG=en_US.UTF-8
 export DOCKER_BUILDKIT=1
+
 export ARCHFLAGS="-arch $(uname -m)"
+# export TRITON_BUILD_WITH_CLANG_LLD=true
+export TRITON_BUILD_WITH_CCACHE=true
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+export CMAKE_GENERATOR=Ninja
+
+#if [ -f "/usr/bin/clang" ]; then
+#  export CC=/usr/bin/clang
+#  export CXX=/usr/bin/clang++
+#fi
+
 export NO_ALBUMENTATIONS_UPDATE=1
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export DOTNET_NOLOGO=1
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   if [ -f "/opt/homebrew/bin/brew" ]; then

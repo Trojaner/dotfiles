@@ -48,7 +48,7 @@ echo "Installing packages for zsh extensions"
 ensure_packages_exist fd-find fzf
 
 echo "Installing utilities"
-ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip htop
+ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip htop ninja-build
 
 touch ~/.nanorc
 { curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
