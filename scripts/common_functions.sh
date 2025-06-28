@@ -49,28 +49,6 @@ venv() {
   fi
 }
 
-install_zsh_plugin() {
-  __assert_zsh
-  __assert_parameter "$1" "<plugin_repo>" 1
-
-  local plugin_repo=$1
-  local plugin_name=$2
-  
-  if [ -z "$plugin_name" ]; then
-    plugin_name=$(basename "$plugin_repo")
-  fi
-
-  local plugin_path="$ZDOTDIR/.antidote/plugins/$plugin_name"
-
-  if [ ! -d "$plugin_path" ]; then
-    echo "Installing zsh plugin: $plugin_repo to: $plugin_path"
-    git clone --depth=1 "https://github.com/$plugin_repo" "$plugin_path" &>/dev/null || true
-  else
-    echo "Updating zsh plugin: $plugin_repo"
-    git -C "$plugin_path" pull  &>/dev/null || true
-  fi
-}
-
 # Run a command with sudo, ignores sudo command if already root and keeps sudo session alive
 run_with_sudo() {
   __assert_zsh # setopt below is zsh-specific
@@ -93,32 +71,6 @@ run_with_sudo() {
 
   sudo "${cmd_args[@]}"
   return "$?"
-}
-
-edit_and_source() {
-  __assert_zsh # setopt below zsh-specific
-  setopt local_options err_return
-
-  __assert_parameter "$1" "<file>" 1
-  local file=$1
-
-  while true; do
-    "${EDITOR:-nano}" "$file" && source "$file"
-
-    local exit_code=$?
-
-    if [ $exit_code != 0 ]; then
-      echo 'There were errors. Re-edit?' >&2
-      echo '[Y]es/[N]o:' >&2
-      read "REPLY"
-
-      case "$REPLY" in
-        [Yy]*) continue ;;
-      esac
-    fi
-
-    break
-  done
 }
 
 # Install packages if missing, executing update only once
@@ -163,7 +115,7 @@ ensure_packages_exist() {
 }
 
 append_to_file() {
-  __assert_zsh # array last element used in $file below is zsh-specific
+  __assert_zsh
   __assert_parameter "$2" "<line>" 2
   __assert_parameter "$3" "<file>" 3
 
@@ -173,45 +125,6 @@ append_to_file() {
   grep -qF "$line" "$file" 2>/dev/null || echo "$line" | tee --append "$file" >/dev/null
 }
 
-run_remote_script() {
-  __assert_parameter $1, "<script url>" 1
-
-  local quiet=false
-  local shell='sh'
-  local OPTIND arg
-
-  while getopts "qs:" arg; do
-    case $arg in
-      q) quiet=true ;;
-      s) shell=$OPTARG ;;
-    esac
-  done
-
-  shift "$((OPTIND - 1))"
-
-  local script_url=$1
-  local script_args=""
-
-  shift 1
-
-  if [ "$1" = '--' ]; then
-    shift 1
-    script_args="${*[@]}"
-  fi
-
-  if [ -n "$script_args" ]; then
-    echo "> $script_url $script_args"
-  else
-    echo "> $script_url"
-  fi
-
-  if [ $quiet = true ]; then
-    { curl -fsSL "$script_url" | "$shell" -s -- "$script_args" } >/dev/null
-  else
-    { curl -fsSL "$script_url" | "$shell" -s -- "$script_args" }
-  fi
-}
-
 __wsl_precmd_current_path_prompt() {
   __assert_wsl
 
@@ -219,7 +132,7 @@ __wsl_precmd_current_path_prompt() {
 }
 
 __assert_wsl() {
-  __assert_zsh  # funcstack below zsh-specific
+  __assert_zsh
 
   local caller_function_name=${funcstack[2]}
 
@@ -240,9 +153,8 @@ __is_wsl() {
   fi
 }
 
-# Ensures that the passed parameter exists
 __assert_parameter() {
-  __assert_zsh # funcstack below zsh-specific
+  __assert_zsh
 
   local parameter_value=$1
   local parameter_name=$2
