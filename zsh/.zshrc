@@ -8,6 +8,8 @@ zstyle ':antidote:compatibility-mode' 'antibody' 'on'
 zstyle ':omz:update' mode auto
 zstyle ':omz:update' frequency 7
 
+source "$ZDOTDIR/.antidote/antidote.zsh"
+
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 setopt HIST_FIND_NO_DUPS
