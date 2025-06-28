@@ -164,8 +164,8 @@ ensure_packages_exist() {
 
 append_to_file() {
   __assert_zsh # array last element used in $file below is zsh-specific
-  __assert_parameter "$2", "<line>", 2
-  __assert_parameter "$3", "<file>", 3
+  __assert_parameter "$2" "<line>" 2
+  __assert_parameter "$3" "<file>" 3
 
   local line="${@[@]:1:(${#}-1)}"
   local file="${@[-1]}"
