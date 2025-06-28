@@ -41,6 +41,7 @@ venv() {
     uv venv --relocatable "$venv_full_path"
     
     source "$venv_full_path/bin/activate"
+    python -m ensurepip
     python -m pip install ninja setuptools wheel
     deactivate
 
