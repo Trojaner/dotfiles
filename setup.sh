@@ -4,7 +4,7 @@
 set -eu -o pipefail
 
 # Variables
-BASE_DIR=$(realpath $(dirname $0)/..)
+BASE_DIR=$(realpath $(dirname $0))
 HOME_DIR=$(realpath ~)
 APT_PACKAGES_UPDATED=false
 
@@ -46,6 +46,7 @@ ensure_packages_exist chroma command-not-found
 
 echo "Installing packages for zsh extensions"
 ensure_packages_exist fd-find fzf
+run_with_sudo snap install procs
 
 echo "Installing utilities"
 ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip htop ninja-build
@@ -62,7 +63,10 @@ ln -sf $BASE_DIR/shell/.profile $HOME_DIR/.profile
 ln -sf $BASE_DIR/shell/.inputrc $HOME_DIR/.inputrc
 
 git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZDOTDIR/.antidote"
-(cd "$ZDOTDIR/.antidote" && ) || true
+source "$ZDOTDIR/.antidote/antidote.zsh"
+antidote update
+antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+antidote load
 ZSH=$(antidote path ohmyzsh/ohmyzsh)
 
 # nano
@@ -91,6 +95,10 @@ ln -sf $BASE_DIR/htop/htoprc $HOME_DIR/.config/htop/htoprc
 
 # git
 ln -sf $BASE_DIR/git/.gitconfig $HOME_DIR/.gitconfig
+
+# tig
+git clone --depth=1 https://github.com/jonas/tig.git $HOME_DIR/.local/src/tig
+(cd $HOME_DIR/.local/src/tig; make; make install)
 
 # keys
 echo "Adding SSH public key"
