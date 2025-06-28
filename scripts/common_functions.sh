@@ -4,14 +4,14 @@ APT_PACKAGES_UPDATED=false
 SUDO_KEEPALIVE_STARTED=false
 
 append_path() {
-  __assert_parameter "$1", "<directories>", 1
+  __assert_parameter "$1" "<directories>" 1
 
   local path_directories=("$@")
   export PATH=$(IFS=:; echo "${path_directories[*]}:${PATH:+:${PATH}}")
 }
 
 append_ld_library() {
-  __assert_parameter "$1", "<directories>", 1
+  __assert_parameter "$1" "<directories>" 1
 
   local path_directories=("$@")
   export LD_LIBRARY_PATH=$(IFS=:; echo "${path_directories[*]}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}")
@@ -54,7 +54,7 @@ venv() {
 
 install_zsh_plugin() {
   __assert_zsh
-  __assert_parameter "$1", "<plugin_repo>", 1
+  __assert_parameter "$1" "<plugin_repo>" 1
 
   local plugin_repo=$1
   local plugin_name=$2
@@ -77,7 +77,7 @@ install_zsh_plugin() {
 # Run a command with sudo, ignores sudo command if already root and keeps sudo session alive
 run_with_sudo() {
   __assert_zsh # setopt below is zsh-specific
-  __assert_parameter "$1", "<command>", 1
+  __assert_parameter "$1" "<command>" 1
 
   local cmd_args=("$@")
 
@@ -102,7 +102,7 @@ edit_and_source() {
   __assert_zsh # setopt below zsh-specific
   setopt local_options err_return
 
-  __assert_parameter "$1", "<file>", 1
+  __assert_parameter "$1" "<file>" 1
   local file=$1
 
   while true; do
@@ -126,7 +126,7 @@ edit_and_source() {
 
 # Install packages if missing, executing update only once
 ensure_package_exists() {
-    __assert_parameter "$1", "<package>", 1
+    __assert_parameter "$1" "<package>" 1
 
     local pkg_name=$1
     local pkg_result_code=0
@@ -149,7 +149,7 @@ ensure_package_exists() {
 }
 
 ensure_packages_exist() {
-  __assert_parameter "$1", "<packages...>", 1
+  __assert_parameter "$1" "<packages...>" 1
 
   for package in "$@"; do
     ensure_package_exists "$package"
@@ -177,7 +177,7 @@ append_to_file() {
 }
 
 run_remote_script() {
-  __assert_parameter $1, "<script url>", 1
+  __assert_parameter $1, "<script url>" 1
 
   local quiet=false
   local shell='sh'
