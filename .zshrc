@@ -1,4 +1,7 @@
-source ~/.zsh/common_functions.sh
+export LANG=en_US.UTF-8
+export ZDOTDIR="$HOME/.zsh"
+
+source "$ZDOTDIR/common_functions.sh"
 
 PATH_DIRECTORIES=(
   "$HOME/bin"
@@ -9,66 +12,46 @@ PATH_DIRECTORIES=(
 
 append_path "${PATH_DIRECTORIES[@]}"
 
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="cloud"
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-zstyle ':omz:update' mode auto      # update automatically without asking
+# zsh settings
+zstyle ':omz:update' mode auto
 zstyle ':omz:update' frequency 7
 
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 setopt HIST_FIND_NO_DUPS
 setopt HIST_LEX_WORDS
+setopt EXTENDED_GLOB
+setopt GLOB_DOTS
+setopt NO_HUP
 
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-HIST_STAMPS="dd/mm/yyyy H:M"
-
+# oh-my-zsh settings
+export ZSH="$HOME/.oh-my-zsh"
 export ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
 export ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
+export ZSH_THEME="cloud"
 export ZSH_TMUX_UNICODE=true
+export COMPLETION_WAITING_DOTS="true"
+export DISABLE_UNTRACKED_FILES_DIRTY="true"
+export HIST_STAMPS="dd/mm/yyyy H:M"
 
 plugins=(
+  ansible
   aws
   colored-man-pages
   colorize
   command-not-found
+  copybuffer
   docker
+  docker-compose
+  doctl
   dotnet
+  encode64
   extract
   fastfile
-  # fig -- commercial
-  # gcloud
+  fzf
   gh
   # helm -- causes address already in use error on multiple shells
   history
-  # httpie
-  # kn
   kubectl
   kubectx
   kops
@@ -94,104 +77,76 @@ plugins=(
   zsh-tab-title
 )
 
-# zsh-completions
-keep_current_path() {
-  if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
-    printf "\e]9;9;%s\e\\" "$(wslpath -w "$PWD")"
-  fi
+# auto completions
+fpath+=$ZSH/custom/plugins/zsh-completions/src
 
-}
-
-precmd_functions+=(keep_current_path)
-fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+if __is_wsl; then
+  precmd_functions+=(__wsl_precmd_current_path_prompt)
+fi
 
 source $ZSH/oh-my-zsh.sh
 source <(fzf --zsh)
 
-export LANG=en_US.UTF-8
+# build flags
+export ARCHFLAGS="-arch $(uname -m)"
+export CMAKE_GENERATOR=Ninja
+export TRITON_BUILD_WITH_CCACHE=true
 export DOCKER_BUILDKIT=1
 
-export ARCHFLAGS="-arch $(uname -m)"
+# note: 
+#  breaks triton builds for some reason
+# 
 # export TRITON_BUILD_WITH_CLANG_LLD=true
-export TRITON_BUILD_WITH_CCACHE=true
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
-export CMAKE_GENERATOR=Ninja
-
 #if [ -f "/usr/bin/clang" ]; then
 #  export CC=/usr/bin/clang
 #  export CXX=/usr/bin/clang++
 #fi
 
+# telemtry and auto updates
 export NO_ALBUMENTATIONS_UPDATE=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export DOTNET_NOLOGO=1
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  if [ -f "/opt/homebrew/bin/brew" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  fi
-
-  if [ -f "/opt/homebrew/bin/pyenv" ]; then
-    eval "$(pyenv init -)"
-  fi
-fi
-
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  export XAUTHORITY=$HOME/.Xauthority
-  export LIBGL_ALWAYS_INDIRECT=1
-  export XCURSOR_SIZE=64
-  export LIBRARY_PATH=/lib/x86_64-linux-gnu${LIBRARY_PATH:+:${LIBRARY_PATH}}
-fi
-
-if [ -d "/usr/local/cuda" ]; then
-  export CUDA_HOME=/usr/local/cuda
-  export CUDA_PATH=/usr/local/cuda
-  export CUDADIR=/usr/local/cuda
-  export CUDA_CUDA_LIB=/usr/lib/x86_64-linux-gnu/libcuda.so
-  export CUDA_INSTALL_PATH=/usr/local/cuda
-  export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
-  export CPATH=/usr/local/cuda/include${CPATH:+:${CPATH}}
-  export LIBRARY_PATH=/usr/local/cuda/lib64${LIBRARY_PATH:+:${LIBRARY_PATH}}
-  export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-fi
-
-if [ -d "/usr/lib/x86_64-linux-gnu/openblas" ]; then
-  export OPENBLASDIR=/usr/lib/x86_64-linux-gnu/openblas
-fi
-
-if [ -f "/usr/lib/x86_64-linux-gnu/libnccl.so" ]; then
-  export NCCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libnccl.so
-fi
-
+# ffmpeg
 if [ -f "/usr/bin/ffmpeg" ]; then
   export FFMPEG_PATH=/usr/bin/ffmpeg
 fi
 
-# Always list all files
+# openblas
+if [ -d "/usr/lib/x86_64-linux-gnu/openblas" ]; then
+  export OPENBLASDIR=/usr/lib/x86_64-linux-gnu/openblas
+fi
+
+# fzf
+export FZF_DEFAULT_OPTS='--color=fg:-1,fg+:#ffffff,bg:-1,bg+:#3c4048 --color=hl:#5ea1ff,hl+:#5ef1ff,info:#ffbd5e,marker:#5eff6c --color=prompt:#ff5ef1,spinner:#bd5eff,pointer:#ff5ea0,header:#5eff6c --color=gutter:-1,border:#3c4048,scrollbar:#7b8496,label:#7b8496 --color=query:#ffffff --border="rounded" --border-label="" --preview-window="border-rounded" --height 40% --preview="bat -n --color=always {}"'
+
+# go
+export GO111MODULE=on
+
+# python
+export PYTHONIOENCODING=UTF-8
+export PYTHONUTF8=1
+export UV_LINK_MODE=symlink
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
+# aliases
 alias ls='ls -lah --color=auto'
 alias python='python3'
 alias tmux='tmux -u'
-alias venv='. venv/bin/activate'
+alias venv='source venv/bin/activate'
 alias rsync='rsync -Ph --info=progress2 --no-i-r'
 alias sysctl='/usr/sbin/sysctl'
 
-# Include hidden files in GLOB
-setopt GLOB_DOTS
-setopt NO_HUP
-
-# Set nano as default editor
+# default editor
 export EDITOR=nano
 export VISUAL="$EDITOR"
 export KUBE_EDITOR="$EDITOR"
 export GIT_EDITOR="$EDITOR"
 
-# Fix GPG TTY
+# gpg tty fix
 export GPG_TTY=$(tty)
 
-# Fix something with go
-export GO111MODULE=on
-
-# Windows-like keyboard behavior
+# windows-like keyboard behavior
 r-delregion() {
   if ((REGION_ACTIVE)) then
      zle kill-region
@@ -256,7 +211,7 @@ for key     kcap   seq        mode   widget (
   bindkey ${terminfo[$kcap]-$seq} key-$key
 }
 
-# Set theme
+# theme
 echo -en "\e]P0000000" #black
 echo -en "\e]P1FF0000" #lightred
 echo -en "\e]P200FF00" #lightgreen
@@ -274,30 +229,57 @@ echo -en "\e]PD800080" #magenta
 echo -en "\e]PE008080" #cyan
 echo -en "\e]PFC0C0C0" #white
 
-# Set background color
-printf %b '\e]11;#300A24\a'
+printf %b '\e]11;#300A24\a' # background color
 
-# zsh parameter completion for the dotnet CLI
+# macos specific
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export PATH="/opt/homebrew/bin${PATH:+:${PATH}}"
 
-_dotnet_zsh_complete()
-{
-  local completions=("$(dotnet complete "$words")")
-
-  # If the completion list is empty, just continue with filename selection
-  if [ -z "$completions" ]
-  then
-    _arguments '*::arguments: _normal'
-    return
+  if [ -f "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 
-  # This is not a variable assignment, don't remove spaces!
-  _values = "${(ps:\n:)completions}"
-}
+  if [ -f "/opt/homebrew/bin/pyenv" ]; then
+    eval "$(pyenv init -)"
+  fi
+fi
 
-compdef _dotnet_zsh_complete dotnet
+# linux specific
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  export XAUTHORITY=$HOME/.Xauthority
+  export LIBGL_ALWAYS_INDIRECT=1
+  export XCURSOR_SIZE=64
+  export LIBRARY_PATH=/lib/x86_64-linux-gnu${LIBRARY_PATH:+:${LIBRARY_PATH}}
 
+  if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
+    precmd_functions+=(__wsl_append_current_path)
+  fi
+
+  # cuda
+  if [ -d "/usr/local/cuda" ]; then
+    export CUDA_HOME=/usr/local/cuda
+    export CUDA_PATH=/usr/local/cuda
+    export CUDADIR=/usr/local/cuda
+    export CUDA_CUDA_LIB=/usr/lib/x86_64-linux-gnu/libcuda.so
+    export CUDA_INSTALL_PATH=/usr/local/cuda
+    export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+    export CPATH=/usr/local/cuda/include${CPATH:+:${CPATH}}
+    export LIBRARY_PATH=/usr/local/cuda/lib64${LIBRARY_PATH:+:${LIBRARY_PATH}}
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+  fi
+
+  if [ -f "/usr/lib/x86_64-linux-gnu/libnccl.so" ]; then
+    export NCCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libnccl.so
+  fi
+fi
+
+# local zsh configuration
 local zsh_rc_local="$HOME/.zshrc_local"
 
 if [ -f "$zsh_rc_local" ]; then
   source "$zsh_rc_local"
+fi
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  autoload -U compinit && compinit
 fi
