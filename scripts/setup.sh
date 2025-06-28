@@ -50,29 +50,26 @@ ensure_packages_exist fd-find fzf
 echo "Installing utilities"
 ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip htop ninja-build
 
+# zsh, oh-my-zsh, antidote
+ZDOTDIR="$HOME_DIR/.zsh"
+mkdir -p $ZDOTDIR
+
+ln -sf $BASE_DIR/scripts/common_functions.sh $ZDOTDIR/common_functions.sh
+ln -sf $BASE_DIR/zsh/.zsh_plugins.txt $ZDOTDIR/.zsh_plugins.txt
+ln -sf $BASE_DIR/zsh/.zshrc $HOME_DIR/.zshrc
+
+ln -sf $BASE_DIR/shell/.profile $HOME_DIR/.profile
+ln -sf $BASE_DIR/shell/.inputrc $HOME_DIR/.inputrc
+
+git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZDOTDIR/.antidote"
+(cd "$ZDOTDIR/.antidote" && ) || true
+ZSH=$(antidote path ohmyzsh/ohmyzsh)
+
 # nano
 touch ~/.nanorc
 { curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
 mkdir -p ~/.nano/backup
 ln -sf $BASE_DIR/nano/.nanorc $HOME_DIR/.nanorc
-
-# zsh, oh-my-zsh
-ZDOTDIR="$HOME_DIR/.zsh"
-mkdir -p $ZDOTDIR
-
-ln -sf $BASE_DIR/scripts/common_functions.sh $ZDOTDIR/common_functions.sh
-ln -sf $BASE_DIR/.zsh_plugins.txt $ZDOTDIR/.zsh_plugins.txt
-ln -sf $BASE_DIR/.zshrc $HOME_DIR/.zshrc
-ln -sf $BASE_DIR/.profile $HOME_DIR/.profile
-
-echo "Installing oh-my-zsh"
-if [ ! -d $HOME_DIR/.oh-my-zsh ]; then
-  { curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | /bin/bash -s -- "" --unattended } >/dev/null
-fi
-
-{ curl -fsSL git.io/antibody | sudo sh -s - -b /usr/local/bin } >/dev/null
-git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions &>/dev/null || true
-git clone https://github.com/trystan2k/zsh-tab-title ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-tab-title &>/dev/null || true
 
 # tmux
 mkdir -p $HOME_DIR/.tmux
@@ -90,10 +87,10 @@ python3 -m pip install --user libtmux tmuxp s-tui gpustat
 
 # htop
 mkdir -p $HOME_DIR/.config/htop
-ln -sf $BASE_DIR/.config/htop/htoprc $HOME_DIR/.config/htop/htoprc
+ln -sf $BASE_DIR/htop/htoprc $HOME_DIR/.config/htop/htoprc
 
 # git
-ln -sf $BASE_DIR/.gitconfig $HOME_DIR/.gitconfig
+ln -sf $BASE_DIR/git/.gitconfig $HOME_DIR/.gitconfig
 
 # keys
 echo "Adding SSH public key"

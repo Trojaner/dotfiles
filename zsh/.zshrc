@@ -13,6 +13,7 @@ PATH_DIRECTORIES=(
 append_path "${PATH_DIRECTORIES[@]}"
 
 # zsh settings
+zstyle ':antidote:compatibility-mode' 'antibody' 'on'
 zstyle ':omz:update' mode auto
 zstyle ':omz:update' frequency 7
 
@@ -25,7 +26,7 @@ setopt GLOB_DOTS
 setopt NO_HUP
 
 # oh-my-zsh settings
-export ZSH="$HOME/.oh-my-zsh"
+export ZSH=$(antidote path ohmyzsh/ohmyzsh)
 export ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
 export ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
 export ZSH_THEME="cloud"
@@ -84,8 +85,15 @@ if __is_wsl; then
   precmd_functions+=(__wsl_precmd_current_path_prompt)
 fi
 
-source $ZSH/oh-my-zsh.sh
-source <(fzf --zsh)
+# antidote
+zsh_plugins="$ZDOTDIR/.zsh_plugins"
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
+  (
+    source "$ZDOTDIR/.antidote/antidote.zsh"
+    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+  )
+fi
+source ${zsh_plugins}.zsh
 
 # build flags
 export ARCHFLAGS="-arch $(uname -m)"
@@ -253,7 +261,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
   if [ -f "/proc/sys/fs/binfmt_misc/WSLInterop" ]; then
     precmd_functions+=(__wsl_append_current_path)
-  fi
+  fi 
 
   # cuda
   if [ -d "/usr/local/cuda" ]; then
