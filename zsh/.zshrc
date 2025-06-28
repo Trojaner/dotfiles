@@ -141,7 +141,6 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 alias ls='ls -lah --color=auto'
 alias python='python3'
 alias tmux='tmux -u'
-alias venv='source venv/bin/activate'
 alias rsync='rsync -Ph --info=progress2 --no-i-r'
 alias sysctl='/usr/sbin/sysctl'
 
