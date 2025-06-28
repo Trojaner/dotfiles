@@ -14,6 +14,7 @@ setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 setopt HIST_FIND_NO_DUPS
 setopt HIST_LEX_WORDS
+setopt HIST_FIND_NO_DUPS
 setopt EXTENDED_GLOB
 setopt GLOB_DOTS
 setopt NO_HUP
@@ -27,53 +28,15 @@ export ZSH_TMUX_UNICODE=true
 export COMPLETION_WAITING_DOTS="true"
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
 export HIST_STAMPS="dd/mm/yyyy H:M"
+export HISTORY_START_WITH_GLOBAL=1
+export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
+export HISTORY_SUBSTRING_SEARCH_FUZZY=1
 
-plugins=(
-  ansible
-  aws
-  colored-man-pages
-  colorize
-  command-not-found
-  copybuffer
-  docker
-  docker-compose
-  doctl
-  dotnet
-  encode64
-  extract
-  fastfile
-  fzf
-  gh
-  # helm -- causes address already in use error on multiple shells
-  history
-  kubectl
-  kubectx
-  kops
-  nmap
-  npm
-  nvm
-  pip
-  # postgres -- only adds aliases?
-  redis-cli
-  rsync
-  screen
-  sudo
-  systemd
-  timer
-  tmux
-  tmuxinator
-  ufw
-  vscode
-  yarn
-  z
-  zsh-interactive-cd
-  zsh-navigation-tools
-  zsh-tab-title
-)
+# zsh-history-substring-search
+bindkey '^[[A' history-substring-search-up # or '\eOA'
+bindkey '^[[B' history-substring-search-down # or '\eOB'
 
-# auto completions
-fpath+=$ZSH/custom/plugins/zsh-completions/src
-
+# wsl
 if __is_wsl; then
   precmd_functions+=(__wsl_precmd_current_path_prompt)
 fi
