@@ -3,15 +3,6 @@ export ZDOTDIR="$HOME/.zsh"
 
 source "$ZDOTDIR/common_functions.sh"
 
-PATH_DIRECTORIES=(
-  "$HOME/bin"
-  "$HOME/.local/bin"
-  "$HOME/.cargo/bin"
-  "/usr/local/bin"
-)
-
-append_path "${PATH_DIRECTORIES[@]}"
-
 # zsh settings
 zstyle ':antidote:compatibility-mode' 'antibody' 'on'
 zstyle ':omz:update' mode auto
@@ -94,6 +85,15 @@ if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
   )
 fi
 source ${zsh_plugins}.zsh
+
+PATH_DIRECTORIES=(
+  "$HOME/bin"
+  "$HOME/.local/bin"
+  "$HOME/.cargo/bin"
+  "/usr/local/bin"
+)
+
+append_path "${PATH_DIRECTORIES[@]}"
 
 # build flags
 export ARCHFLAGS="-arch $(uname -m)"
