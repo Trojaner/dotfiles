@@ -45,7 +45,7 @@ echo "Installing dependencies"
 ensure_packages_exist chroma command-not-found
 
 echo "Installing packages for zsh extensions"
-ensure_packages_exist fd-find fzf bat
+ensure_packages_exist fd-find fzf bat libsqlite3-dev sqlite3 sqlite3-tools
 ln -sf /usr/bin/batcat ~/.local/bin/bat
 run_with_sudo snap install procs
 
