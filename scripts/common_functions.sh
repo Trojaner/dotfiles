@@ -4,15 +4,11 @@ APT_PACKAGES_UPDATED=false
 SUDO_KEEPALIVE_STARTED=false
 
 append_path() {
-  __assert_parameter "$1" "<directories>" 1
-
   local path_directories=("$@")
   export PATH=$(IFS=:; echo "${path_directories[*]}:${PATH:+:${PATH}}")
 }
 
 append_ld_library() {
-  __assert_parameter "$1" "<directories>" 1
-
   local path_directories=("$@")
   export LD_LIBRARY_PATH=$(IFS=:; echo "${path_directories[*]}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}")
 }
