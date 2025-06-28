@@ -1,4 +1,4 @@
-sindresorhus/pure
+# sindresorhus/pure
 ahmetb/kubectx path:completion kind:fpath
 zdharma-continuum/fast-syntax-highlighting
 getantidote/use-omz
