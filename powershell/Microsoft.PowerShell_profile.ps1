@@ -1,5 +1,3 @@
-echo "Microsoft.PowerShell_profile.ps1"
-
 if ([Environment]::GetCommandLineArgs().Contains("-NonInteractive")) {
   return
 }

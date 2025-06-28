@@ -1,5 +1,3 @@
-echo "profile.ps1"
-
 if (Test-Path alias:Curl) { 
   Remove-Item alias:Curl 
 }
