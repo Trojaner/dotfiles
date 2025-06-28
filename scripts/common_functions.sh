@@ -203,3 +203,13 @@ __assert_zsh() {
 
   return 0
 }
+
+_zsh_autosuggest_strategy_histdb_top_here() {
+    local query="SELECT commands.argv FROM
+history LEFT JOIN commands ON history.command_id = commands.rowid
+LEFT JOIN places ON history.place_id = places.rowid
+WHERE places.dir LIKE '$(sql_escape $PWD)%'
+AND commands.argv LIKE '$(sql_escape $1)%'
+GROUP BY commands.argv ORDER BY count(*) DESC LIMIT 1"
+    suggestion=$(_histdb_query "$query")
+}

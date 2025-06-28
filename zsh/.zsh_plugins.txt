@@ -35,7 +35,7 @@ ohmyzsh/ohmyzsh path:plugins/node
 ohmyzsh/ohmyzsh path:plugins/npm
 ohmyzsh/ohmyzsh path:plugins/nvm
 ohmyzsh/ohmyzsh path:plugins/opentofu
-ohmyzsh/ohmyzsh path:plugins/per-directory-history
+# ohmyzsh/ohmyzsh path:plugins/per-directory-history
 ohmyzsh/ohmyzsh path:plugins/pip
 ohmyzsh/ohmyzsh path:plugins/poetry
 ohmyzsh/ohmyzsh path:plugins/procs
@@ -68,4 +68,6 @@ trystan2k/zsh-tab-title
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-completions
 zsh-users/zsh-syntax-highlighting
-zsh-users/zsh-history-substring-search
+# zsh-users/zsh-history-substring-search
+larkery/zsh-histdb
+m42e/zsh-histdb-skim

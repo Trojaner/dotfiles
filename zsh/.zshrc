@@ -21,7 +21,7 @@ setopt NO_HUP
 
 # oh-my-zsh settings
 export ZSH=$(antidote path ohmyzsh/ohmyzsh)
-export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+export ZSH_AUTOSUGGEST_STRATEGY=(histdb_top_here completion)
 export ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
 export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 export ZSH_AUTOSUGGEST_USE_ASYNC=1
@@ -49,7 +49,15 @@ if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
     antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
   )
 fi
+
 source ${zsh_plugins}.zsh
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export HISTDB_TABULATE_CMD=(sed -e $'s/\x1f/\t/g')
+fi
+
+source "$(antidote path larkery/zsh-histdb)/sqlite-history.zsh"
+source "$(antidote path larkery/zsh-histdb)/histdb-interactive.zsh"
 
 PATH_DIRECTORIES=(
   "$HOME/bin"
@@ -250,6 +258,7 @@ fi
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey 'forward-char' autosuggest-accept
+bindkey '^R' histdb-skim-widget
 
 # local zsh configuration
 local zsh_rc_local="$HOME/.zshrc_local"
