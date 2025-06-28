@@ -18,6 +18,7 @@ winget install --exact --source winget --id=JanDeDobbeleer.OhMyPosh --scope user
 winget install --exact --source winget --id=magic-wormhole.magic-wormhole --scope user --accept-source-agreements --silent
 winget install --exact --source winget --id=junegunn.fzf --scope user --accept-source-agreements --silent
 winget install --exact --source winget --id=Fastfetch-cli.Fastfetch --scope user --accept-source-agreements --silent
+winget install --exact --source winget --id=sharkdp.bat --scope user --accept-source-agreements --silent
 # winget install --exact --source winget --id=direnv.direnv --scope user --accept-source-agreements --silent
 
 Unregister-PackageSource -Source PSGallery

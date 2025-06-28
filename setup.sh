@@ -45,7 +45,8 @@ echo "Installing dependencies"
 ensure_packages_exist chroma command-not-found
 
 echo "Installing packages for zsh extensions"
-ensure_packages_exist fd-find fzf
+ensure_packages_exist fd-find fzf bat
+ln -sf /usr/bin/batcat ~/.local/bin/bat
 run_with_sudo snap install procs
 
 echo "Installing utilities"
