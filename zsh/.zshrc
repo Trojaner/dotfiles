@@ -21,7 +21,10 @@ setopt NO_HUP
 
 # oh-my-zsh settings
 export ZSH=$(antidote path ohmyzsh/ohmyzsh)
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+export ZSH_AUTOSUGGEST_USE_ASYNC=1
 export ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
 export ZSH_THEME="cloud"
 export ZSH_TMUX_UNICODE=true
@@ -32,9 +35,6 @@ export HISTORY_START_WITH_GLOBAL=1
 export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
 export HISTORY_SUBSTRING_SEARCH_FUZZY=1
 
-# zsh-history-substring-search
-bindkey '^[[A' history-substring-search-up # or '\eOA'
-bindkey '^[[B' history-substring-search-down # or '\eOB'
 
 # wsl
 if __is_wsl; then
@@ -244,6 +244,11 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export NCCL_LIBRARY=/usr/lib/x86_64-linux-gnu/libnccl.so
   fi
 fi
+
+# zsh-history-substring-search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey 'forward-char' autosuggest-accept
 
 # local zsh configuration
 local zsh_rc_local="$HOME/.zshrc_local"

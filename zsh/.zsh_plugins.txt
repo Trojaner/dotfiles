@@ -1,6 +1,6 @@
 # sindresorhus/pure
 ahmetb/kubectx path:completion kind:fpath
-zdharma-continuum/fast-syntax-highlighting
+# zdharma-continuum/fast-syntax-highlighting
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:lib
 ohmyzsh/ohmyzsh path:plugins/ansible
@@ -64,7 +64,8 @@ ohmyzsh/ohmyzsh path:plugins/zsh-interactive-cd
 # ohmyzsh/ohmyzsh path:plugins/zoxide
 # ohmyzsh/ohmyzsh path:plugins/ufw
 trystan2k/zsh-tab-title
-z-shell/zsh-navigation-tools
+# z-shell/zsh-navigation-tools
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-completions
+zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
