@@ -31,3 +31,5 @@ kubectl krew install ctx
 kubectl krew install ns
 kubectl krew install tree
 kubectl krew install node-resource
+kubectl krew install view-secret
+kubectl krew install modify-secret
