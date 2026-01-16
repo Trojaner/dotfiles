@@ -66,9 +66,13 @@
 
 [user]
 
-  signingkey = 30D309B77EDBEE37
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIILsP2M+EL7qAt9seRBKSbaLn+/6+5WY6CAfElCF0Up2
   name = Enes Sadık Özbek
   email = 1809172+Trojaner@users.noreply.github.com
+
+[gpg]
+
+	format = ssh
 
 [gpg "ssh"]
 
