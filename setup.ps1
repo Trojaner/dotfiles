@@ -43,7 +43,6 @@ oh-my-posh font install Hack
 oh-my-posh enable notice
 oh-my-posh disable upgrade
 
-New-Item -Path "$HOME\Documents\PowerShell\profile.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\powershell\profile.ps1").Path | Out-Null
 New-Item -Path "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\powershell\Microsoft.PowerShell_profile.ps1").Path | Out-Null
 New-Item -Path "$HOME\Documents\PowerShell\posh-theme.json" -ItemType SymbolicLink -Value (Resolve-Path ".\powershell\posh-theme.json").Path | Out-Null
 
