@@ -14,8 +14,8 @@ if ([Environment]::GetCommandLineArgs().Contains("-NonInteractive")) {
 
 $env:POSH_GIT_ENABLED = $true
 
-Import-Module -Name posh-git
 Import-Module -Name PSReadLine
+Import-Module -Name posh-git
 Import-Module -Name Get-ChildItemColor
 Import-Module -Name Terminal-Icons
 Import-Module -Name Microsoft.WinGet.Client
@@ -47,3 +47,5 @@ Set-PSReadLineKeyHandler -Chord 'Ctrl+z' -Function Undo
 Set-PSReadLineKeyHandler -Chord 'Ctrl+y' -Function Redo
 Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+if ($env:TERM_PROGRAM -eq "vscode") { . "$(code-insiders --locate-shell-integration-path pwsh)" }

@@ -8,4 +8,6 @@ Set-PSReadLineOption -PredictionViewStyle ListView
 Set-PSReadLineOption -HistorySearchCursorMovesToEnd:$true
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 
+if ($env:TERM_PROGRAM -eq "vscode") { . "$(code-insiders --locate-shell-integration-path pwsh)" }
+
 fastfetch
