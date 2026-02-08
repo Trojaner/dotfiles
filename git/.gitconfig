@@ -1,105 +1,88 @@
 [init]
-
-  defaultBranch = main
+    defaultBranch = main
 
 [color]
-
-  ui = true
+    ui = true
 
 [color "branch"]
-
-  current = yellow reverse
-  local = yellow
-  remote = green
+    current = yellow reverse
+    local = yellow
+    remote = green
 
 [color "diff"]
-
-  meta = yellow bold
-  frag = magenta bold # line info
-  old = red # deletions
-  new = green # additions
+    meta = yellow bold
+    frag = magenta bold # line info
+    old = red # deletions
+    new = green # additions
 
 [color "status"]
-
-  added = yellow
-  changed = green
-  untracked = cyan
+    added = yellow
+    changed = green
+    untracked = cyan
 
 [diff]
-
-  renames = copies
+    renames = copies
 
 [url "git@github.com:github"]
-
-  insteadOf = "https://github.com/github"
-  insteadOf = "github:github"
-  insteadOf = "git://github.com/github"
+    insteadOf = "https://github.com/github"
+    insteadOf = "github:github"
+    insteadOf = "git://github.com/github"
 
 [url "git@github.com:"]
-
-  pushInsteadOf = "https://github.com/"
-  pushInsteadOf = "github:"
-  pushInsteadOf = "git://github.com/"
+    pushInsteadOf = "https://github.com/"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
 
 [url "git://github.com/"]
-
-  insteadOf = "github:"
+    insteadOf = "github:"
 
 [url "git@gist.github.com:"]
-
-  insteadOf = "gst:"
-  pushInsteadOf = "gist:"
-  pushInsteadOf = "git://gist.github.com/"
+    insteadOf = "gst:"
+    pushInsteadOf = "gist:"
+    pushInsteadOf = "git://gist.github.com/"
 
 [url "git://gist.github.com/"]
-
-  insteadOf = "gist:"
+    insteadOf = "gist:"
 
 [commit]
-
-  gpgsign = true
+    gpgsign = true
 
 [pull]
-
-  ff = true
-  rebase = true
+    ff = true
+    rebase = true
 
 [user]
-
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIILsP2M+EL7qAt9seRBKSbaLn+/6+5WY6CAfElCF0Up2
-  name = Enes Sadık Özbek
-  email = 1809172+Trojaner@users.noreply.github.com
-
-[gpg]
-
-	format = ssh
-
-[gpg "ssh"]
-
-  allowedSignersFile = ~/.ssh/allowed_signers
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIILsP2M+EL7qAt9seRBKSbaLn+/6+5WY6CAfElCF0Up2
+    name = Enes Sadık Özbek
+    email = 1809172+Trojaner@users.noreply.github.com
 
 [core]
-
-  editor = nano
+    editor = nano
 
 [credential]
-
-  helper = store
+    helper = store
 
 [merge]
-
-  ff = only
-  autostash = true
+    ff = only
+    autostash = true
 
 [rebase]
-
-  autostash = true
+    autostash = true
 
 [push]
-
-  autoSetupRemote = true
+    autoSetupRemote = true
 
 [fetch]
+    prune = true
 
-  prune = false
+[gpg]
+    format = ssh
 
+[difftool]
+    prompt = true
+
+[mergetool]
+    prompt = true
+
+[rerere]
+    enabled = true
