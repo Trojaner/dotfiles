@@ -1,5 +1,6 @@
 # sindresorhus/pure
 ahmetb/kubectx path:completion kind:fpath
+Aloxaf/fzf-tab
 # zdharma-continuum/fast-syntax-highlighting
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:lib
@@ -24,7 +25,7 @@ ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/git-auto-fetch
 ohmyzsh/ohmyzsh path:plugins/git-lfs
 ohmyzsh/ohmyzsh path:plugins/gh
-ohmyzsh/ohmyzsh path:plugins/gpg-agent
+# ohmyzsh/ohmyzsh path:plugins/gpg-agent
 ohmyzsh/ohmyzsh path:plugins/kubectl
 ohmyzsh/ohmyzsh path:plugins/kubectx
 # ohmyzsh/ohmyzsh path:plugins/kops
@@ -48,7 +49,7 @@ ohmyzsh/ohmyzsh path:plugins/rsync
 ohmyzsh/ohmyzsh path:plugins/screen
 ohmyzsh/ohmyzsh path:plugins/snap
 ohmyzsh/ohmyzsh path:plugins/ssh
-ohmyzsh/ohmyzsh path:plugins/ssh-agent
+# ohmyzsh/ohmyzsh path:plugins/ssh-agent
 ohmyzsh/ohmyzsh path:plugins/sudo
 ohmyzsh/ohmyzsh path:plugins/systemd
 ohmyzsh/ohmyzsh path:plugins/themes
@@ -59,8 +60,8 @@ ohmyzsh/ohmyzsh path:plugins/tmuxinator
 ohmyzsh/ohmyzsh path:plugins/ubuntu
 ohmyzsh/ohmyzsh path:plugins/urltools
 ohmyzsh/ohmyzsh path:plugins/yarn
-ohmyzsh/ohmyzsh path:plugins/z
-ohmyzsh/ohmyzsh path:plugins/zsh-interactive-cd
+# ohmyzsh/ohmyzsh path:plugins/z
+# ohmyzsh/ohmyzsh path:plugins/zsh-interactive-cd
 # ohmyzsh/ohmyzsh path:plugins/zoxide
 # ohmyzsh/ohmyzsh path:plugins/ufw
 trystan2k/zsh-tab-title
@@ -71,3 +72,5 @@ zsh-users/zsh-syntax-highlighting
 # zsh-users/zsh-history-substring-search
 larkery/zsh-histdb
 m42e/zsh-histdb-skim
+unixorn/fzf-zsh-plugin
+Myzel394/zsh-copilot

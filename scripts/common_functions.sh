@@ -39,7 +39,7 @@ venv() {
     fi
 
     uv venv --relocatable "$venv_full_path"
-    
+
     source "$venv_full_path/bin/activate"
     python -m ensurepip
     python -m pip install ninja setuptools wheel
@@ -210,6 +210,6 @@ history LEFT JOIN commands ON history.command_id = commands.rowid
 LEFT JOIN places ON history.place_id = places.rowid
 WHERE places.dir LIKE '$(sql_escape $PWD)%'
 AND commands.argv LIKE '$(sql_escape $1)%'
-GROUP BY commands.argv ORDER BY count(*) DESC LIMIT 1"
+GROUP BY commands.argv ORDER BY places.dir != '$(sql_escape $PWD)', history.id DESC LIMIT 1"
     suggestion=$(_histdb_query "$query")
 }

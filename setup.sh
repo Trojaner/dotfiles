@@ -50,7 +50,9 @@ ln -sf /usr/bin/batcat ~/.local/bin/bat
 run_with_sudo snap install procs
 
 echo "Installing utilities"
-ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip htop ninja-build
+ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip pipx htop ninja-build
+pipx ensurepath
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # zsh, oh-my-zsh, antidote
 ZDOTDIR="$HOME_DIR/.zsh"
@@ -88,7 +90,12 @@ else
   git -C $HOME_DIR/.tmux/plugins/tpm pull
 fi
 
-python3 -m pip install --user libtmux tmuxp s-tui gpustat
+uv tool install tmuxp
+uv tool install s-tui
+uv tool install gpustat
+
+uvx --with tmuxp shtab --shell=zsh -u tmuxp.cli.create_parser \
+  | sudo tee /usr/local/share/zsh/site-functions/_TMUXP
 
 # htop
 mkdir -p $HOME_DIR/.config/htop
@@ -125,9 +132,10 @@ else
   chmod 600 $HOME_DIR/.ssh/config
 fi
 
-echo ""
-echo "**Do not forget to import GPG signing key 30D309B77EDBEE37 if "git commit" is needed on this device**"
-echo ""
+# Get OpenAI secret and save as OPENAI_API_KEY to .zsh_secrets.sh
+echo "Enter your OpenAI API key (sk-...): "
+read -s OPENAI_API_KEY_INPUT
+append_to_file "export OPENAI_API_KEY=\"$OPENAI_API_KEY_INPUT\"" "$ZDOTDIR/.zsh_secrets.sh"
 
 # sudo
 echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | run_with_sudo tee /etc/sudoers.d/$USER
