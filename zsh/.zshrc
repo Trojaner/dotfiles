@@ -246,7 +246,7 @@ echo -en "\e]PD800080" #magenta
 echo -en "\e]PE008080" #cyan
 echo -en "\e]PFC0C0C0" #white
 
-printf %b '\e]11;#300A24\a' # background color
+# printf %b '\e]11;#300A24\a' # background color
 
 # macos specific
 if [[ "$OSTYPE" == "darwin"* ]]; then

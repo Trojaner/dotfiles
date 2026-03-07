@@ -73,4 +73,4 @@ zsh-users/zsh-syntax-highlighting
 larkery/zsh-histdb
 m42e/zsh-histdb-skim
 unixorn/fzf-zsh-plugin
-Myzel394/zsh-copilot
+Trojaner/zsh-copilot
