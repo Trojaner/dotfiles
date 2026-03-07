@@ -1,6 +1,5 @@
 # sindresorhus/pure
 ahmetb/kubectx path:completion kind:fpath
-Aloxaf/fzf-tab
 # zdharma-continuum/fast-syntax-highlighting
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:lib
@@ -68,9 +67,11 @@ trystan2k/zsh-tab-title
 # z-shell/zsh-navigation-tools
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-completions
-zsh-users/zsh-syntax-highlighting
+zdharma-continuum/fast-syntax-highlighting
+# zsh-users/zsh-syntax-highlighting
 # zsh-users/zsh-history-substring-search
 larkery/zsh-histdb
 m42e/zsh-histdb-skim
-unixorn/fzf-zsh-plugin
+# unixorn/fzf-zsh-plugin
 Trojaner/zsh-copilot
+Aloxaf/fzf-tab

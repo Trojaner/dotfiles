@@ -5,7 +5,7 @@ SUDO_KEEPALIVE_STARTED=false
 
 append_path() {
   local path_directories=("$@")
-  export PATH=$(IFS=:; echo "${path_directories[*]}:${PATH:+:${PATH}}")
+  export PATH=$(IFS=:; echo "${path_directories[*]}${PATH:+:${PATH}}")
 }
 
 append_ld_library() {
@@ -173,7 +173,7 @@ __assert_parameter() {
 
   local caller_function_name=${funcstack[2]}
 
-  if [ -z $arg ]; then
+  if [ -z "$parameter_value" ]; then
     echo "ERR: The function ${caller_function_name} is missing the \"${parameter_name}\" parameter at index ${parameter_index}." >&2
     return 1 2>/dev/null
     exit 1
@@ -191,16 +191,6 @@ __assert_zsh() {
     exit 1
   fi
 
-  if [ -z "$ZDOTDIR" ]; then
-    echo "ERR: ZDOTDIR is not defined" >&2
-    return 1 2>/dev/null
-  fi
-
-  if [ -z "$ZSH" ]; then
-    echo "ERR: ZSH is not defined" >&2
-    return 1 2>/dev/null
-  fi
-
   return 0
 }
 
@@ -211,5 +201,8 @@ LEFT JOIN places ON history.place_id = places.rowid
 WHERE places.dir LIKE '$(sql_escape $PWD)%'
 AND commands.argv LIKE '$(sql_escape $1)%'
 GROUP BY commands.argv ORDER BY places.dir != '$(sql_escape $PWD)', history.id DESC LIMIT 1"
-    suggestion=$(_histdb_query "$query")
+    local result
+    result=$(_histdb_query "$query")
+    result="${result%%$'\n'*}"
+    [[ "$result" == "${1}"* ]] && suggestion=$result
 }

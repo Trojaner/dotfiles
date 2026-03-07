@@ -45,8 +45,9 @@ echo "Installing dependencies"
 ensure_packages_exist chroma command-not-found
 
 echo "Installing packages for zsh extensions"
-ensure_packages_exist fd-find fzf bat libsqlite3-dev sqlite3 sqlite3-tools
-ln -sf /usr/bin/batcat ~/.local/bin/bat
+ensure_packages_exist fd-find fzf bat jq libsqlite3-dev sqlite3 zoxide eza sqlite3-tools
+mkdir -p $HOME_DIR/.local/bin
+ln -sf /usr/bin/batcat $HOME_DIR/.local/bin/bat
 run_with_sudo snap install procs
 
 echo "Installing utilities"
@@ -59,6 +60,7 @@ ZDOTDIR="$HOME_DIR/.zsh"
 mkdir -p $ZDOTDIR
 
 ln -sf $BASE_DIR/scripts/common_functions.sh $ZDOTDIR/common_functions.sh
+ln -sf $BASE_DIR/scripts/relay-ssh-agent.sh $ZDOTDIR/relay-ssh-agent.sh
 ln -sf $BASE_DIR/zsh/.zsh_plugins.txt $ZDOTDIR/.zsh_plugins.txt
 ln -sf $BASE_DIR/zsh/.zshrc $HOME_DIR/.zshrc
 
@@ -67,15 +69,26 @@ ln -sf $BASE_DIR/shell/.inputrc $HOME_DIR/.inputrc
 
 git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZDOTDIR/.antidote"
 source "$ZDOTDIR/.antidote/antidote.zsh"
-antidote update
-antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+antidote bundle <${ZDOTDIR}/.zsh_plugins.txt >${ZDOTDIR}/.zsh_plugins.zsh
 antidote load
 ZSH=$(antidote path ohmyzsh/ohmyzsh)
 
+ensure_packages_exist cargo
+_histdb_skim_plugin_dir=$(antidote path m42e/zsh-histdb-skim)
+_histdb_skim_version=$(grep -m1 'HISTB_SKIM_VERSION=' "${_histdb_skim_plugin_dir}/zsh-histdb-skim.zsh" | sed 's/.*"\(.*\)".*/\1/')
+_histdb_skim_bin_dir="${XDG_DATA_HOME:-$HOME_DIR/.local/share}/zsh-histdb-skim"
+_histdb_skim_bin="${_histdb_skim_bin_dir}/zsh-histdb-skim"
+if [[ ! -f "${_histdb_skim_bin}" ]] || [[ "$("${_histdb_skim_bin}" --version 2>/dev/null)" != "${_histdb_skim_version}" ]]; then
+  echo "Building zsh-histdb-skim ${_histdb_skim_version} from source"
+  mkdir -p "${_histdb_skim_bin_dir}"
+  cargo build --release --manifest-path "${_histdb_skim_plugin_dir}/Cargo.toml"
+  cp "${_histdb_skim_plugin_dir}/target/release/zsh-histdb-skim" "${_histdb_skim_bin}"
+fi
+
 # nano
-touch ~/.nanorc
+touch $HOME_DIR/.nanorc
 { curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
-mkdir -p ~/.nano/backup
+mkdir -p $HOME_DIR/.nano/backup
 ln -sf $BASE_DIR/nano/.nanorc $HOME_DIR/.nanorc
 
 # tmux
@@ -95,7 +108,7 @@ uv tool install s-tui
 uv tool install gpustat
 
 uvx --with tmuxp shtab --shell=zsh -u tmuxp.cli.create_parser \
-  | sudo tee /usr/local/share/zsh/site-functions/_TMUXP
+  | run_with_sudo tee /usr/local/share/zsh/site-functions/_TMUXP
 
 # htop
 mkdir -p $HOME_DIR/.config/htop
@@ -105,6 +118,7 @@ ln -sf $BASE_DIR/htop/htoprc $HOME_DIR/.config/htop/htoprc
 ln -sf $BASE_DIR/git/.gitconfig $HOME_DIR/.gitconfig
 
 # tig
+ensure_packages_exist libncurses-dev
 git clone --depth=1 https://github.com/jonas/tig.git $HOME_DIR/.local/src/tig
 (cd $HOME_DIR/.local/src/tig; make; make install)
 
@@ -142,4 +156,4 @@ echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | run_with_sudo tee /etc/sudoers.d/$USE
 
 echo "Done!"
 
-. ~/.zshrc
+. $HOME_DIR/.zshrc
