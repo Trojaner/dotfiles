@@ -1,6 +1,8 @@
 export LANG=en_US.UTF-8
 export ZDOTDIR="$HOME/.zsh"
 
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+
 source "$ZDOTDIR/common_functions.sh"
 
 if [ -f "$ZDOTDIR/.zsh_secrets.sh" ]; then
@@ -355,9 +357,6 @@ if [[ "$TERM_PROGRAM" == "vscode" ]] && [[ -d "$HOME/.vscode-server-insiders" ]]
   [[ -f "$vscode_server_path" ]] && . "$("$vscode_server_path" --locate-shell-integration-path zsh)"
   unset vscode_server_path
 fi
-
-[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
-
 
 # fzf
 export FZF_PREVIEW_WINDOW="border-rounded"
