@@ -13,7 +13,7 @@ set boldtext
 set historylog
 set locking
 set constantshow
-set minibar
+# set minibar
 set smarthome
 set trimblanks
 set noconvert

@@ -81,6 +81,7 @@ PATH_DIRECTORIES=(
   "$HOME/.cargo/bin"
   "$HOME/.krew/bin"
   "/usr/local/bin"
+  "/snap/bin"
 )
 
 append_path "${PATH_DIRECTORIES[@]}"
@@ -127,12 +128,12 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 # aliases
 # alias cd='z'
 alias ls='eza -lah --icons=always --color=always --created --changed --git --no-quotes'
+alias kubectx='kubectl ctx'
+alias kubens='kubectl ns'
 alias python='python3'
 alias tmux='tmux -u -2'
 alias rsync='rsync -Ph --info=progress2 --no-i-r'
 [[ "$OSTYPE" == "linux-gnu"* ]] && alias sysctl='/usr/sbin/sysctl'
-alias kubectx='kubectl ctx'
-alias kubens='kubectl ns'
 
 # default editor
 export EDITOR=nano
@@ -292,8 +293,6 @@ fi
 # history search
 bindkey '^R' histdb-skim-widget
 
-zle-line-init() {}
-
 bindkey '\e[A' history-beginning-search-backward-end
 bindkey '\e[B' history-beginning-search-forward-end
 
@@ -365,3 +364,22 @@ export FZF_DEFAULT_OPTS="$FZF_COLOR_SCHEME --border='rounded' --border-label='' 
 export FZF_CTRL_T_OPTS="--preview='bat -n --color=always {}'"
 export FZF_CTRL_R_OPTS="--delimiter=':' --preview=''"
 export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --preview='eza -1 --color=always -- {2..}'"
+
+TRAPWINCH() {
+  zle && { zle reset-prompt; zle -R }
+}
+
+__reset_terminal_colors() {
+  [[ -e /dev/tty ]] || return
+
+  printf '\033]104\007' > /dev/tty
+
+  printf '\033]110\007' > /dev/tty
+  printf '\033]111\007' > /dev/tty
+
+  printf '\033[39;49m' > /dev/tty
+}
+
+if [[ $- == *i* ]]; then
+  __reset_terminal_colors
+fi

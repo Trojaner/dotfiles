@@ -67,12 +67,20 @@ ln -sf $BASE_DIR/zsh/.zshrc $HOME_DIR/.zshrc
 ln -sf $BASE_DIR/shell/.profile $HOME_DIR/.profile
 ln -sf $BASE_DIR/shell/.inputrc $HOME_DIR/.inputrc
 
-git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZDOTDIR/.antidote"
-source "$ZDOTDIR/.antidote/antidote.zsh"
-antidote bundle <${ZDOTDIR}/.zsh_plugins.txt >${ZDOTDIR}/.zsh_plugins.zsh
-antidote load
-ZSH=$(antidote path ohmyzsh/ohmyzsh)
+if [ ! -d "$ZDOTDIR/.antidote" ]; then
+  git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZDOTDIR/.antidote"
+else
+  git -C "$ZDOTDIR/.antidote" pull
+fi
 
+source "$ZDOTDIR/.antidote/antidote.zsh"
+
+if [ -z $ZSH ]; then
+  antidote load
+  ZSH=$(antidote path ohmyzsh/ohmyzsh)
+fi
+
+echo "Building zsh-histdb-skim from source"
 ensure_packages_exist cargo
 _histdb_skim_plugin_dir=$(antidote path m42e/zsh-histdb-skim)
 _histdb_skim_version=$(grep -m1 'HISTB_SKIM_VERSION=' "${_histdb_skim_plugin_dir}/zsh-histdb-skim.zsh" | sed 's/.*"\(.*\)".*/\1/')
@@ -103,9 +111,9 @@ else
   git -C $HOME_DIR/.tmux/plugins/tpm pull
 fi
 
-uv tool install tmuxp
-uv tool install s-tui
-uv tool install gpustat
+uv tool install tmuxp --force
+uv tool install s-tui --force
+uv tool install gpustat --force
 
 uvx --with tmuxp shtab --shell=zsh -u tmuxp.cli.create_parser \
   | run_with_sudo tee /usr/local/share/zsh/site-functions/_TMUXP
@@ -119,7 +127,12 @@ ln -sf $BASE_DIR/git/.gitconfig $HOME_DIR/.gitconfig
 
 # tig
 ensure_packages_exist libncurses-dev
+
+if [ ! -d $HOME_DIR/.local/src/tig ]; then
 git clone --depth=1 https://github.com/jonas/tig.git $HOME_DIR/.local/src/tig
+else
+  git -C $HOME_DIR/.local/src/tig pull
+fi
 (cd $HOME_DIR/.local/src/tig; make; make install)
 
 # keys
@@ -146,13 +159,25 @@ else
   chmod 600 $HOME_DIR/.ssh/config
 fi
 
-# Get OpenAI secret and save as OPENAI_API_KEY to .zsh_secrets.sh
-echo "Enter your OpenAI API key (sk-...): "
-read -s OPENAI_API_KEY_INPUT
-append_to_file "export OPENAI_API_KEY=\"$OPENAI_API_KEY_INPUT\"" "$ZDOTDIR/.zsh_secrets.sh"
-
 # sudo
 echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | run_with_sudo tee /etc/sudoers.d/$USER
+
+if __is_wsl; then
+  ensure_packages_exist socat golang-go
+  go get -d github.com/jstarks/npiperelay
+
+  GOOS=windows go build -o /mnt/c/Users/Public/go/bin/npiperelay.exe github.com/jstarks/npiperelay
+  run_with_sudo ln -s /mnt/c/Users/Public/go/bin/npiperelay.exe /usr/local/bin/npiperelay.exe
+
+  if [ ! -f /etc/wsl.conf ]; then
+    echo "[boot]" | run_with_sudo tee /etc/wsl.conf
+    echo "systemd=true" | run_with_sudo tee --append /etc/wsl.conf
+    echo "" | run_with_sudo tee --append /etc/wsl.conf
+    echo "[automount]" | run_with_sudo tee --append /etc/wsl.conf
+    echo "enabled=true" | run_with_sudo tee --append /etc/wsl.conf
+  fi
+fi
+
 
 echo "Done!"
 
