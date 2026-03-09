@@ -293,6 +293,8 @@ fi
 # history search
 bindkey '^R' histdb-skim-widget
 
+zle-line-init() {}
+
 bindkey '\e[A' history-beginning-search-backward-end
 bindkey '\e[B' history-beginning-search-forward-end
 
