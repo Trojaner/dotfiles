@@ -132,7 +132,9 @@ alias kubectx='kubectl ctx'
 alias kubens='kubectl ns'
 alias python='python3'
 alias tmux='tmux -u -2'
-alias rsync='rsync -Ph --info=progress2 --no-i-r'
+alias rs='rsync -vPh --info=progress2 --no-i-r'
+alias rsync='rsync -vPh --info=progress2 --no-i-r'
+
 [[ "$OSTYPE" == "linux-gnu"* ]] && alias sysctl='/usr/sbin/sysctl'
 
 # default editor
