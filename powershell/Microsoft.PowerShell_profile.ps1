@@ -1,19 +1,41 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
-
-if ([Environment]::GetCommandLineArgs().Contains("-NonInteractive")) {
-  return
+function IsVirtualTerminalProcessingEnabled {
+    $MethodDefinitions = @'
+[DllImport("kernel32.dll", SetLastError = true)]
+public static extern IntPtr GetStdHandle(int nStdHandle);
+[DllImport("kernel32.dll", SetLastError = true)]
+public static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+'@
+    $Kernel32 = Add-Type -MemberDefinition $MethodDefinitions -Name 'Kernel32' -Namespace 'Win32' -PassThru
+    $hConsoleHandle = $Kernel32::GetStdHandle(-11) # STD_OUTPUT_HANDLE
+    $mode = 0
+    $Kernel32::GetConsoleMode($hConsoleHandle, [ref]$mode) >$null
+    if ($mode -band 0x0004) {
+        # 0x0004 ENABLE_VIRTUAL_TERMINAL_PROCESSING
+        return $true
+    }
+    return $false
 }
+
+function CanUsePredictionSource {
+    return (! [System.Console]::IsOutputRedirected) -and (IsVirtualTerminalProcessingEnabled)
+}
+
+if ([Environment]::GetCommandLineArgs().Contains("-NonInteractive") -or [Environment]::GetCommandLineArgs().Contains("-NoProfile") -or [Environment]::GetCommandLineArgs().Contains("-ExecutionPolicy") -or -not (CanUsePredictionSource)) {
+    return
+}
+
 
 $env:POSH_GIT_ENABLED = $true
 
 oh-my-posh init pwsh --config "$HOME\Documents\PowerShell\posh-theme.json" | Invoke-Expression
 
 if (Test-Path alias:Curl) { 
-  Remove-Item alias:Curl 
+    Remove-Item alias:Curl 
 }
 
 if (Test-Path alias:WGet) { 
-  Remove-Item alias:WGet 
+    Remove-Item alias:WGet 
 }
 
 Import-Module -Name PSReadLine
@@ -27,18 +49,18 @@ Import-Module -Name CompletionPredictor
 # # Invoke-Expression "$(direnv hook pwsh)"
 
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
-  param($wordToComplete, $commandAst, $cursorPosition)
-  dotnet complete --position $cursorPosition "$commandAst" | ForEach-Object {
-    [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
-  }
+    param($wordToComplete, $commandAst, $cursorPosition)
+    dotnet complete --position $cursorPosition "$commandAst" | ForEach-Object {
+        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    }
 }
 
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 $PSReadLineOptions = @{
-  EditMode            = 'Windows'
-  PredictionSource    = 'HistoryAndPlugin'
-  PredictionViewStyle = 'ListView' 
-  HistorySearchCursorMovesToEnd = $true
+    EditMode                      = 'Windows'
+    PredictionSource              = 'HistoryAndPlugin'
+    PredictionViewStyle           = 'ListView' 
+    HistorySearchCursorMovesToEnd = $true
 }
 
 Set-PSReadLineOption @PSReadLineOptions
@@ -52,7 +74,5 @@ Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 
 if ($env:TERM_PROGRAM -eq "vscode") { 
-  . "$(code-insiders --locate-shell-integration-path pwsh)"
-} else { 
-  fastfetch 
+    . "$(code-insiders --locate-shell-integration-path pwsh)"
 }
