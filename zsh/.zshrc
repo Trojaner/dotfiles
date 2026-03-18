@@ -163,10 +163,15 @@ r-delregion() {
 }
 
 r-deselect() {
+  local was_active=$REGION_ACTIVE
   ((REGION_ACTIVE = 0))
   local widget_name=$1
   shift
-  zle $widget_name -- $@
+  if ((was_active)); then
+    zle .$widget_name -- $@
+  else
+    zle $widget_name -- $@
+  fi
 }
 
 r-select() {
