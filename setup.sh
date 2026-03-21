@@ -45,7 +45,7 @@ echo "Installing dependencies"
 ensure_packages_exist chroma command-not-found
 
 echo "Installing packages for zsh extensions"
-ensure_packages_exist fd-find fzf bat jq libsqlite3-dev sqlite3 zoxide eza sqlite3-tools
+ensure_packages_exist fd-find fzf bat jq libsqlite3-dev sqlite3 zoxide eza sqlite3-tools magic-wormhole
 mkdir -p $HOME_DIR/.local/bin
 ln -sf /usr/bin/batcat $HOME_DIR/.local/bin/bat
 run_with_sudo snap install procs
