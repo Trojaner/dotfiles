@@ -111,7 +111,7 @@ raw_bar() {
 # --- Time left ---
 ttl() {
   ts=$1
-  [ "$ts" -eq 0 ] 2>/dev/null && { printf '--'; return; }
+  [ "$ts" -eq 0 ] 2>/dev/null && { printf '%s' '--'; return; }
   now=$(date +%s)
   d=$(( ts - now ))
   if [ "$d" -le 0 ]; then printf 'now'
@@ -130,7 +130,10 @@ ctx_bg=$(ctx_bg_color "$ctx_int")
 bg_5h=$(usage_bg "$r5")
 bg_7d=$(usage_bg "$r7")
 
+# --- Cloud theme: basename of cwd ---
+cwd_base=$(basename "$cwd")
+
 # --- Output ---
-printf "${BOLD}workspace:${RST} ${cwd} · ${BOLD}model:${RST} ${model} · ${BOLD}git:${RST} ${git_branch} ${git_indicator}${git_extra}${git_files} · ${BOLD}context:${RST} ${ctx_bg} ${ctx_int}%% ${RST} · ${LGREEN_BG} +${lines_add} ${RST} ${LRED_BG} -${lines_del} ${RST} · ${BOLD}cost:${RST} ${cost_fmt}\n"
+printf "${BOLD}workspace:${RST} ${BOLD}\033[0;32m${cwd_base}${RST} · ${BOLD}model:${RST} ${model} · ${BOLD}git:${RST} ${git_branch} ${git_indicator}${git_extra}${git_files} · ${BOLD}context:${RST} ${ctx_bg} ${ctx_int}%% ${RST} · ${LGREEN_BG} +${lines_add} ${RST} ${LRED_BG} -${lines_del} ${RST} · ${BOLD}cost:${RST} ${cost_fmt}\n"
 printf "${BOLD}usage:${RST} ${LABEL_BG} 5h [$(ttl "$reset_5h")] ${RST}${bg_5h}$(raw_bar "$r5" 20)${RST} | ${LABEL_BG} 7d [$(ttl "$reset_7d")] ${RST}${bg_7d}$(raw_bar "$r7" 20)${RST}\n"
 printf "\033[38;5;242m    Alt+P model  Alt+T think  Alt+O fast  Shift+Tab mode${RST}"
