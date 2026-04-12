@@ -123,13 +123,15 @@ mkdir -p $HOME_DIR/.config/htop
 ln -sf $BASE_DIR/htop/htoprc $HOME_DIR/.config/htop/htoprc
 
 # git
-ln -sf $BASE_DIR/git/.gitconfig $HOME_DIR/.gitconfig
+ln -sf $BASE_DIR/git/.gitconfig.shared $HOME_DIR/.gitconfig.shared
+ln -sf $BASE_DIR/git/.gitconfig.linux $HOME_DIR/.gitconfig
 
 # claude code
 npm install -g @anthropic-ai/claude-code
 mkdir -p $HOME_DIR/.claude
-ln -sf $BASE_DIR/claude/settings.json $HOME_DIR/.claude/settings.json
+jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.linux.json > $HOME_DIR/.claude/settings.json
 ln -sf $BASE_DIR/claude/statusline-command.sh $HOME_DIR/.claude/statusline-command.sh
+ln -sf $BASE_DIR/claude/CLAUDE.md $HOME_DIR/.claude/CLAUDE.md
 
 # tig
 ensure_packages_exist libncurses-dev

@@ -46,5 +46,18 @@ oh-my-posh disable upgrade
 New-Item -Path "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\powershell\Microsoft.PowerShell_profile.ps1").Path | Out-Null
 New-Item -Path "$HOME\Documents\PowerShell\posh-theme.json" -ItemType SymbolicLink -Value (Resolve-Path ".\powershell\posh-theme.json").Path | Out-Null
 
+New-Item -Path "$HOME\.gitconfig.shared" -ItemType SymbolicLink -Value (Resolve-Path ".\git\.gitconfig.shared").Path -Force | Out-Null
+New-Item -Path "$HOME\.gitconfig" -ItemType SymbolicLink -Value (Resolve-Path ".\git\.gitconfig.windows").Path -Force | Out-Null
+
+New-Item -Path "$HOME\.claude" -ItemType Directory -Force | Out-Null
+$base = Get-Content ".\claude\settings.base.json" -Raw | ConvertFrom-Json -AsHashtable
+$platform = Get-Content ".\claude\settings.windows.json" -Raw | ConvertFrom-Json -AsHashtable
+foreach ($key in $platform.Keys) {
+    $base[$key] = $platform[$key]
+}
+$base | ConvertTo-Json -Depth 10 | Set-Content "$HOME\.claude\settings.json"
+New-Item -Path "$HOME\.claude\statusline-command.sh" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.sh").Path | Out-Null
+New-Item -Path "$HOME\.claude\CLAUDE.md" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\CLAUDE.md").Path | Out-Null
+
 . $PROFILE
 . $PROFILE.CurrentUserAllHosts

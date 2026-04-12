@@ -1,0 +1,9 @@
+[include]
+    path = .gitconfig.shared
+
+[core]
+    editor = code-insiders --wait
+    autocrlf = true
+
+[credential]
+    helper = manager

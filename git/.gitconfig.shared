@@ -56,12 +56,6 @@
     name = Enes Sadık Özbek
     email = 1809172+Trojaner@users.noreply.github.com
 
-[core]
-    editor = nano
-
-[credential]
-    helper = store
-
 [merge]
     ff = only
     autostash = true
