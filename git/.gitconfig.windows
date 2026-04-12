@@ -2,8 +2,30 @@
     path = .gitconfig.shared
 
 [core]
-    editor = code-insiders --wait
+	editor = \"C:\\Users\\esozb\\AppData\\Local\\Programs\\Microsoft VS Code Insiders\\bin\\code-insiders\" --wait
+    sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
     autocrlf = true
 
 [credential]
     helper = manager
+
+[credential "https://dev.azure.com"]
+    usehttppath = true
+
+[gpg]
+    program = C:\\Program Files\\GnuPG\\bin\\gpg.exe
+
+[diff]
+    tool = vsdiffmerge
+
+[difftool "vsdiffmerge"]
+    cmd = \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\vsdiffmerge.exe\" \"$LOCAL\" \"$REMOTE\" //t
+    keepBackup = false
+
+[merge]
+	tool = vsdiffmerge
+
+[mergetool "vsdiffmerge"]
+    cmd = \"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\vsdiffmerge.exe\" \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\" //m
+    keepBackup = false
+    trustExitCode = true
