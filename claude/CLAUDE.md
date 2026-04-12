@@ -1,5 +1,18 @@
 # Global Instructions
 
+## Agent Delegation Policy
+
+Delegate to a subagent via the Agent tool when a task is expected to be long-running. The trigger is duration/effort, not category — a one-line edit stays in the main conversation, but a task that will span many steps or take significant time should be handed off. This includes cases like:
+
+- Long-running shell commands (builds, installs, full test suites, migrations, data processing)
+- Large or sweeping file edits, deletions, or creations across many files
+- Writing non-trivial code, scripts, or configuration from scratch
+- Multi-file refactors, renames, or restructuring
+- Running code generators, formatters, linters, or codemods at scale
+- Any multi-step implementation work that would otherwise flood the main context
+
+Quick, single-shot edits and read-only exploration should still be done directly. When delegating, brief the agent with full context (goal, constraints, relevant file paths, what's already been tried) so it can work autonomously, and reserve the main conversation for planning, clarifying questions, and reviewing results.
+
 ## External Actions Policy
 
 Do NOT perform external or side-effecting actions without explicit user consent or instructions. This includes but is not limited to:

@@ -129,7 +129,8 @@ ln -sf $BASE_DIR/git/.gitconfig.linux $HOME_DIR/.gitconfig
 # claude code
 npm install -g @anthropic-ai/claude-code
 mkdir -p $HOME_DIR/.claude
-jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.linux.json > $HOME_DIR/.claude/settings.json
+jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.linux.json > $BASE_DIR/claude/settings.json
+ln -sf $BASE_DIR/claude/settings.json $HOME_DIR/.claude/settings.json
 ln -sf $BASE_DIR/claude/statusline-command.sh $HOME_DIR/.claude/statusline-command.sh
 ln -sf $BASE_DIR/claude/CLAUDE.md $HOME_DIR/.claude/CLAUDE.md
 
