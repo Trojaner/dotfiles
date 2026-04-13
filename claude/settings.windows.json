@@ -2,5 +2,9 @@
   "defaultShell": "powershell",
   "env": {
     "CLAUDE_CODE_USE_POWERSHELL_TOOL": "1"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"$HOME/.claude/statusline-command.ps1\""
   }
 }
