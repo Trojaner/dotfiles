@@ -22,6 +22,8 @@ $BLUE_BG = "$E[48;5;153;34m"
 $RED_BG_USAGE = "$E[48;5;217;31m"
 $LABEL_BG = "$E[48;5;240;97m"
 $GREY = "$E[38;5;242m"
+$CYAN_BG = "$E[48;5;159;30m"
+$DIM_BG = "$E[48;5;238;37m"
 
 # --- Parse JSON ---
 $cwd = if ($data.cwd) { $data.cwd } elseif ($data.workspace -and $data.workspace.current_dir) { $data.workspace.current_dir } else { '' }
@@ -34,6 +36,8 @@ $rate5h = if ($null -ne $data.rate_limits -and $null -ne $data.rate_limits.five_
 $rate7d = if ($null -ne $data.rate_limits -and $null -ne $data.rate_limits.seven_day) { $data.rate_limits.seven_day.used_percentage } else { 0 }
 $reset5h = if ($null -ne $data.rate_limits -and $null -ne $data.rate_limits.five_hour) { $data.rate_limits.five_hour.resets_at } else { 0 }
 $reset7d = if ($null -ne $data.rate_limits -and $null -ne $data.rate_limits.seven_day) { $data.rate_limits.seven_day.resets_at } else { 0 }
+$thinkingEnabled = if ($null -ne $data.thinking -and $data.thinking.enabled -eq $true) { $true } else { $false }
+$effortLevel = if ($null -ne $data.effort -and $data.effort.level) { $data.effort.level } else { $null }
 
 # --- Context bg color by percentage ---
 function Get-CtxBgColor($pct) {
@@ -138,12 +142,34 @@ $bg5h = Get-UsageBg $r5
 $bg7d = Get-UsageBg $r7
 $cwdBase = Split-Path $cwd -Leaf
 
+# --- Thinking segment ---
+function Get-ThinkValueBg($level) {
+    switch ($level) {
+        'off'    { return "$E[48;5;240;37m" }   # grey/dim
+        'low'    { return "$E[48;5;34;97m"   }   # green
+        'medium' { return "$E[48;5;38;97m"   }   # cyan/blue
+        'high'   { return "$E[48;5;220;30m"  }   # yellow
+        'xhigh'  { return "$E[48;5;129;97m"  }   # magenta
+        'max'    { return "$E[48;5;196;97m"  }   # red
+        default  { return "$E[48;5;159;30m"  }   # cyan (on/fallback)
+    }
+}
+
+if ($thinkingEnabled) {
+    $valueText = if ($effortLevel) { $effortLevel } else { 'on' }
+    $valueBg   = Get-ThinkValueBg $valueText
+    $thinkingSegment = "${BOLD}think:${RST} ${valueBg} ${valueText} ${RST}"
+} else {
+    $valueBg = Get-ThinkValueBg 'off'
+    $thinkingSegment = "${BOLD}think:${RST} ${valueBg} off ${RST}"
+}
+
 # --- Output ---
 $ttl5h = Get-TimeLeft $reset5h
 $ttl7d = Get-TimeLeft $reset7d
 $bar5h = Get-RawBar $r5 20
 $bar7d = Get-RawBar $r7 20
 
-[Console]::Out.WriteLine("${BOLD}workspace:${RST} ${BOLD}$E[0;32m${cwdBase}${RST} · ${BOLD}model:${RST} ${model} · ${BOLD}git:${RST} ${gitBranch} ${gitIndicator}${gitExtra}${gitFiles} · ${BOLD}context:${RST} ${ctxBg} ${ctxInt}% ${RST} · ${LGREEN_BG} +${linesAdd} ${RST} ${LRED_BG} -${linesDel} ${RST} · ${BOLD}cost:${RST} ${costFmt}")
+[Console]::Out.WriteLine("${BOLD}workspace:${RST} ${BOLD}$E[0;32m${cwdBase}${RST} · ${BOLD}model:${RST} ${model} · ${thinkingSegment} · ${BOLD}git:${RST} ${gitBranch} ${gitIndicator}${gitExtra}${gitFiles} · ${BOLD}context:${RST} ${ctxBg} ${ctxInt}% ${RST} · ${LGREEN_BG} +${linesAdd} ${RST} ${LRED_BG} -${linesDel} ${RST} · ${BOLD}cost:${RST} ${costFmt}")
 [Console]::Out.WriteLine("${BOLD}usage:${RST} ${LABEL_BG} 5h [${ttl5h}] ${RST}${bg5h}${bar5h}${RST} | ${LABEL_BG} 7d [${ttl7d}] ${RST}${bg7d}${bar7d}${RST}")
 [Console]::Out.Write("${GREY}    Alt+P model  Alt+T think  Alt+O fast  Shift+Tab mode${RST}")

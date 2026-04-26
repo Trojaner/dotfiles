@@ -33,6 +33,8 @@ rate_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // 0')
 rate_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // 0')
 reset_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // 0')
 reset_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // 0')
+think_enabled=$(echo "$input" | jq -r '.thinking.enabled // false')
+effort_level=$(echo "$input" | jq -r '.effort.level // ""')
 
 # --- Context bg color by percentage ---
 ctx_bg_color() {
@@ -120,6 +122,31 @@ ttl() {
   else printf '%dd%dh' "$(( d / 86400 ))" "$(( (d % 86400) / 3600 ))"; fi
 }
 
+# --- Think segment ---
+think_segment() {
+  # Determine label and background color (ANSI 256-color)
+  if [ -n "$effort_level" ] && [ "$effort_level" != "null" ]; then
+    label="$effort_level"
+    case "$effort_level" in
+      off)    bg=240 ;;
+      low)    bg=34  ;;
+      medium) bg=38  ;;
+      high)   bg=220 ;;
+      xhigh)  bg=129 ;;
+      max)    bg=196 ;;
+      *)      bg=159 ;;
+    esac
+  elif [ "$think_enabled" = "true" ]; then
+    label="on"
+    bg=159
+  else
+    label="off"
+    bg=240
+  fi
+  printf '\033[1mthink:\033[0m \033[48;5;%dm %s \033[0m' "$bg" "$label"
+}
+think_out=$(think_segment)
+
 # --- Values ---
 ctx_int=$(printf '%.0f' "${used_pct:-0}")
 r5=$(printf '%.0f' "$rate_5h")
@@ -134,6 +161,6 @@ bg_7d=$(usage_bg "$r7")
 cwd_base=$(basename "$cwd")
 
 # --- Output ---
-printf "${BOLD}workspace:${RST} ${BOLD}\033[0;32m${cwd_base}${RST} · ${BOLD}model:${RST} ${model} · ${BOLD}git:${RST} ${git_branch} ${git_indicator}${git_extra}${git_files} · ${BOLD}context:${RST} ${ctx_bg} ${ctx_int}%% ${RST} · ${LGREEN_BG} +${lines_add} ${RST} ${LRED_BG} -${lines_del} ${RST} · ${BOLD}cost:${RST} ${cost_fmt}\n"
+printf "${BOLD}workspace:${RST} ${BOLD}\033[0;32m${cwd_base}${RST} · ${BOLD}model:${RST} ${model} · ${BOLD}git:${RST} ${git_branch} ${git_indicator}${git_extra}${git_files} · ${BOLD}context:${RST} ${ctx_bg} ${ctx_int}%% ${RST} · ${LGREEN_BG} +${lines_add} ${RST} ${LRED_BG} -${lines_del} ${RST} · ${BOLD}cost:${RST} ${cost_fmt} · ${think_out}\n"
 printf "${BOLD}usage:${RST} ${LABEL_BG} 5h [$(ttl "$reset_5h")] ${RST}${bg_5h}$(raw_bar "$r5" 20)${RST} | ${LABEL_BG} 7d [$(ttl "$reset_7d")] ${RST}${bg_7d}$(raw_bar "$r7" 20)${RST}\n"
 printf "\033[38;5;242m    Alt+P model  Alt+T think  Alt+O fast  Shift+Tab mode${RST}"
