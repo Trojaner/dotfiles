@@ -4,14 +4,29 @@
 set -eu -o pipefail
 
 # Variables
-BASE_DIR=$(realpath $(dirname $0))
-HOME_DIR=$(realpath ~)
+BASE_DIR=$(cd "$(dirname "$0")" && pwd)
+HOME_DIR=$(cd ~ && pwd)
 APT_PACKAGES_UPDATED=false
+BREW_PACKAGES_UPDATED=false
 
 # Import common functions
 source $BASE_DIR/scripts/common_functions.sh
 
 __assert_zsh
+
+# On macOS, bootstrap Homebrew before anything else uses ensure_packages_exist
+if __is_macos; then
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
 
 # Packages required for the scripts to work properly
 ensure_packages_exist git coreutils moreutils
@@ -42,16 +57,29 @@ else
 fi
 
 echo "Installing dependencies"
-ensure_packages_exist chroma command-not-found
+if __is_macos; then
+  ensure_packages_exist chroma
+else
+  ensure_packages_exist chroma command-not-found
+fi
 
 echo "Installing packages for zsh extensions"
-ensure_packages_exist fd-find fzf bat jq libsqlite3-dev sqlite3 zoxide eza sqlite3-tools magic-wormhole
 mkdir -p $HOME_DIR/.local/bin
-ln -sf /usr/bin/batcat $HOME_DIR/.local/bin/bat
-run_with_sudo snap install procs
+if __is_macos; then
+  ensure_packages_exist fd fzf bat jq sqlite zoxide eza magic-wormhole procs
+else
+  ensure_packages_exist fd-find fzf bat jq libsqlite3-dev sqlite3 zoxide eza sqlite3-tools magic-wormhole
+  ln -sf /usr/bin/batcat $HOME_DIR/.local/bin/bat
+  run_with_sudo snap install procs
+fi
 
 echo "Installing utilities"
-ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip pipx htop ninja-build
+if __is_macos; then
+  # macOS: pbcopy is built-in (xclip not needed); ncurses/libnotify are not applicable
+  ensure_packages_exist nano unzip tmux tmuxinator go entr pipx htop ninja terminal-notifier
+else
+  ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip pipx htop ninja-build
+fi
 pipx ensurepath
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
@@ -73,15 +101,20 @@ else
   git -C "$ZDOTDIR/.antidote" pull
 fi
 
+# antidote functions reference parameters like BASH_VERSION that are unset
+# under `set -u`; relax it for the antidote-driven block.
+set +u
 source "$ZDOTDIR/.antidote/antidote.zsh"
-
-if [ -z $ZSH ]; then
-  antidote load
-  ZSH=$(antidote path ohmyzsh/ohmyzsh)
-fi
+# Ensure plugins are bundled/cloned so `antidote path` resolves below.
+antidote load "$ZDOTDIR/.zsh_plugins.txt" >/dev/null
+ZSH=$(antidote path ohmyzsh/ohmyzsh)
 
 echo "Building zsh-histdb-skim from source"
-ensure_packages_exist cargo
+if __is_macos; then
+  ensure_packages_exist rust
+else
+  ensure_packages_exist cargo
+fi
 _histdb_skim_plugin_dir=$(antidote path m42e/zsh-histdb-skim)
 _histdb_skim_version=$(grep -m1 'HISTB_SKIM_VERSION=' "${_histdb_skim_plugin_dir}/zsh-histdb-skim.zsh" | sed 's/.*"\(.*\)".*/\1/')
 _histdb_skim_bin_dir="${XDG_DATA_HOME:-$HOME_DIR/.local/share}/zsh-histdb-skim"
@@ -92,11 +125,23 @@ if [[ ! -f "${_histdb_skim_bin}" ]] || [[ "$("${_histdb_skim_bin}" --version 2>/
   cargo build --release --manifest-path "${_histdb_skim_plugin_dir}/Cargo.toml"
   cp "${_histdb_skim_plugin_dir}/target/release/zsh-histdb-skim" "${_histdb_skim_bin}"
 fi
+set -u
 
 # nano
 touch $HOME_DIR/.nanorc
-{ curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
 mkdir -p $HOME_DIR/.nano/backup
+if __is_macos; then
+  # The upstream installer's _update_nanorc_lite uses GNU sed syntax which
+  # fails on BSD sed. Our $BASE_DIR/nano/.nanorc already includes
+  # ~/.nano/*.nanorc, so we only need the syntax files themselves.
+  _nanorc_tmp=$(mktemp -d)
+  curl -fsSL -o "$_nanorc_tmp/nanorc.zip" https://github.com/scopatz/nanorc/archive/master.zip
+  unzip -oq "$_nanorc_tmp/nanorc.zip" -d "$_nanorc_tmp"
+  cp -R "$_nanorc_tmp"/nanorc-master/* "$HOME_DIR/.nano/"
+  rm -rf "$_nanorc_tmp"
+else
+  { curl -fsSL https://raw.githubusercontent.com/scopatz/nanorc/master/install.sh | sh -s -- -l } >/dev/null
+fi
 ln -sf $BASE_DIR/nano/.nanorc $HOME_DIR/.nanorc
 
 # tmux
@@ -115,8 +160,15 @@ uv tool install tmuxp --force
 uv tool install s-tui --force
 uv tool install gpustat --force
 
-uvx --with tmuxp shtab --shell=zsh -u tmuxp.cli.create_parser \
-  | run_with_sudo tee /usr/local/share/zsh/site-functions/_TMUXP
+if __is_macos; then
+  ZSH_SITE_FUNCTIONS_DIR="$(brew --prefix)/share/zsh/site-functions"
+  mkdir -p "$ZSH_SITE_FUNCTIONS_DIR"
+  uvx --with tmuxp shtab --shell=zsh -u tmuxp.cli.create_parser \
+    > "$ZSH_SITE_FUNCTIONS_DIR/_TMUXP"
+else
+  uvx --with tmuxp shtab --shell=zsh -u tmuxp.cli.create_parser \
+    | run_with_sudo tee /usr/local/share/zsh/site-functions/_TMUXP
+fi
 
 # htop
 mkdir -p $HOME_DIR/.config/htop
@@ -124,25 +176,37 @@ ln -sf $BASE_DIR/htop/htoprc $HOME_DIR/.config/htop/htoprc
 
 # git
 ln -sf $BASE_DIR/git/.gitconfig.shared $HOME_DIR/.gitconfig.shared
-ln -sf $BASE_DIR/git/.gitconfig.linux $HOME_DIR/.gitconfig
+if __is_macos; then
+  ln -sf $BASE_DIR/git/.gitconfig.macos $HOME_DIR/.gitconfig
+else
+  ln -sf $BASE_DIR/git/.gitconfig.linux $HOME_DIR/.gitconfig
+fi
 
 # claude code
 npm install -g @anthropic-ai/claude-code
 mkdir -p $HOME_DIR/.claude
-jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.linux.json > $BASE_DIR/claude/settings.json
+if __is_macos; then
+  jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.macos.json > $BASE_DIR/claude/settings.json
+else
+  jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.linux.json > $BASE_DIR/claude/settings.json
+fi
 ln -sf $BASE_DIR/claude/settings.json $HOME_DIR/.claude/settings.json
 ln -sf $BASE_DIR/claude/statusline-command.sh $HOME_DIR/.claude/statusline-command.sh
 ln -sf $BASE_DIR/claude/CLAUDE.md $HOME_DIR/.claude/CLAUDE.md
 
-# tig
-ensure_packages_exist libncurses-dev
-
-if [ ! -d $HOME_DIR/.local/src/tig ]; then
-git clone --depth=1 https://github.com/jonas/tig.git $HOME_DIR/.local/src/tig
+# tig (macOS ships ncurses; install via Homebrew which is simpler than building)
+if __is_macos; then
+  ensure_packages_exist tig
 else
-  git -C $HOME_DIR/.local/src/tig pull
+  ensure_packages_exist libncurses-dev
+
+  if [ ! -d $HOME_DIR/.local/src/tig ]; then
+  git clone --depth=1 https://github.com/jonas/tig.git $HOME_DIR/.local/src/tig
+  else
+    git -C $HOME_DIR/.local/src/tig pull
+  fi
+  (cd $HOME_DIR/.local/src/tig; make; make install)
 fi
-(cd $HOME_DIR/.local/src/tig; make; make install)
 
 # keys
 echo "Adding SSH public key"
@@ -168,8 +232,10 @@ else
   chmod 600 $HOME_DIR/.ssh/config
 fi
 
-# sudo
-echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | run_with_sudo tee /etc/sudoers.d/$USER
+# sudo (skip on macOS — system-managed; opt in manually if desired)
+if ! __is_macos; then
+  echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | run_with_sudo tee /etc/sudoers.d/$USER
+fi
 
 if __is_wsl; then
   ensure_packages_exist socat golang-go
@@ -190,4 +256,7 @@ fi
 
 echo "Done!"
 
+# Sourcing the user zshrc here is best-effort: it expects an interactive
+# shell environment without `set -u`, so relax safety just for this final step.
+set +u +e +o pipefail
 . $HOME_DIR/.zshrc

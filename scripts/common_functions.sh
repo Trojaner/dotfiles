@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 APT_PACKAGES_UPDATED=false
+BREW_PACKAGES_UPDATED=false
 SUDO_KEEPALIVE_STARTED=false
 
 append_path() {
@@ -78,8 +79,25 @@ ensure_package_exists() {
     __assert_parameter "$1" "<package>" 1
 
     local pkg_name=$1
-    local pkg_result_code=0
 
+    if __is_macos; then
+      if brew list --formula "$pkg_name" &>/dev/null \
+         || brew list --cask "$pkg_name" &>/dev/null; then
+        return 0
+      fi
+
+      if [ "$BREW_PACKAGES_UPDATED" != true ]; then
+        echo "Updating Homebrew..."
+        brew update
+        BREW_PACKAGES_UPDATED=true
+      fi
+
+      echo "Installing: $pkg_name"
+      brew install "$pkg_name"
+      return $?
+    fi
+
+    local pkg_result_code=0
     dpkg -l "$pkg_name" &> /dev/null || pkg_result_code="$?"
 
     if [ "$pkg_result_code" != 0 ]; then
@@ -122,7 +140,7 @@ append_to_file() {
   local line="${@[@]:1:(${#}-1)}"
   local file="${@[-1]}"
 
-  grep -qF "$line" "$file" 2>/dev/null || echo "$line" | tee --append "$file" >/dev/null
+  grep -qF "$line" "$file" 2>/dev/null || echo "$line" | tee -a "$file" >/dev/null
 }
 
 __wsl_precmd_current_path_prompt() {
@@ -151,6 +169,14 @@ __is_wsl() {
   else
     return 1
   fi
+}
+
+__is_macos() {
+  [ "$(uname -s)" = "Darwin" ]
+}
+
+__is_linux() {
+  [ "$(uname -s)" = "Linux" ]
 }
 
 __assert_parameter() {
