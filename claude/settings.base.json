@@ -9,5 +9,10 @@
     "prisma@claude-plugins-official": true,
     "mongodb@claude-plugins-official": true
   },
-  "effortLevel": "high"
+  "effortLevel": "medium",
+  "prefersReducedMotion": false,
+  "editorMode": "normal",
+  "verbose": true,
+  "preferredNotifChannel": "auto",
+  "agentPushNotifEnabled": true
 }
