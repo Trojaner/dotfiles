@@ -1,5 +1,5 @@
 export LANG=en_US.UTF-8
-export ZDOTDIR="$HOME/.zsh"
+ZDOTDIR="$HOME/.zsh"
 
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
