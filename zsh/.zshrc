@@ -358,8 +358,6 @@ else
   compinit -C -i
 fi
 
-eval "$(zoxide init --cmd cd zsh)"
-
 if [[ "$TERM_PROGRAM" == "vscode" ]] && [[ -d "$HOME/.vscode-server-insiders" ]]; then
   vscode_server_path=$(find "$HOME/.vscode-server-insiders" -name "code-insiders" -type f -print -quit 2>/dev/null)
   [[ -f "$vscode_server_path" ]] && . "$("$vscode_server_path" --locate-shell-integration-path zsh)"
@@ -392,3 +390,5 @@ __reset_terminal_colors() {
 if [[ $- == *i* ]]; then
   __reset_terminal_colors
 fi
+
+eval "$(zoxide init --cmd cd zsh)"
