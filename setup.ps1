@@ -60,5 +60,8 @@ New-Item -Path "$HOME\.claude\statusline-command.sh" -ItemType SymbolicLink -Val
 New-Item -Path "$HOME\.claude\statusline-command.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.ps1").Path | Out-Null
 New-Item -Path "$HOME\.claude\CLAUDE.md" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\CLAUDE.md").Path | Out-Null
 
+$insidersBin = "$env:LOCALAPPDATA\Programs\Microsoft VS Code Insiders\bin"
+New-Item -Path "$insidersBin\code.cmd" -ItemType SymbolicLink -Value "$insidersBin\code-insiders.cmd" -Force | Out-Null
+
 . $PROFILE
 . $PROFILE.CurrentUserAllHosts
