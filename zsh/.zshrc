@@ -122,7 +122,6 @@ export GO111MODULE=on
 # python
 export PYTHONIOENCODING=UTF-8
 export PYTHONUTF8=1
-export UV_LINK_MODE=symlink
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 # aliases
@@ -325,6 +324,8 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:*' use-fzf-default-opts yes
+zstyle ':fzf-tab:*' fzf-flags '--height=100%'
+zstyle ':fzf-tab:*' continuous-trigger 'tab'
 zstyle ':fzf-tab:complete:(export|unset):*' fzf-preview 'echo ${(P)word}'
 zstyle ':fzf-tab:complete:*:*' fzf-preview '
   if [[ -d "$realpath" ]]; then
@@ -368,9 +369,38 @@ fi
 export FZF_PREVIEW_WINDOW="border-rounded"
 export FZF_COLOR_SCHEME="--color=fg:-1,fg+:#ffffff,bg:-1,bg+:#3c4048 --color=hl:#5ea1ff,hl+:#5ef1ff,info:#ffbd5e,marker:#5eff6c --color=prompt:#ff5ef1,spinner:#bd5eff,pointer:#ff5ea0,header:#5eff6c --color=gutter:-1,border:#3c4048,scrollbar:#7b8496,label:#7b8496 --color=query:#ffffff"
 export FZF_DEFAULT_OPTS="$FZF_COLOR_SCHEME --border='rounded' --border-label='' --preview-window='$FZF_PREVIEW_WINDOW' --height 40%"
-export FZF_CTRL_T_OPTS="--preview='bat -n --color=always {}'"
+export FZF_CTRL_T_COMMAND='fd --type f --type d --hidden --follow --exclude .git'
+export FZF_CTRL_T_OPTS="--multi --height=100% --bind='ctrl-/:toggle-preview,ctrl-a:select-all' --preview='if [ -d {} ]; then eza -1 --color=always -- {}; else bat -n --color=always -- {} 2>/dev/null || cat -- {}; fi'"
 export FZF_CTRL_R_OPTS="--delimiter=':' --preview=''"
 export _ZO_FZF_OPTS="$FZF_DEFAULT_OPTS --preview='eza -1 --color=always -- {2..}'"
+
+# Ctrl+G: ripgrep content search -> insert "$EDITOR +<line> <file>" into buffer
+__fzf_rg_widget() {
+  local rg_cmd='rg --line-number --no-heading --color=always --smart-case --hidden --glob=!.git'
+  local selected
+  selected=$(
+    FZF_DEFAULT_COMMAND="$rg_cmd ''" \
+    fzf --ansi --multi --height=100% --delimiter=: \
+        --disabled --query="" \
+        --bind="change:reload:$rg_cmd {q} || true" \
+        --bind='ctrl-/:toggle-preview' \
+        --preview='bat --color=always --highlight-line {2} -- {1} 2>/dev/null || cat -- {1}' \
+        --preview-window='right:60%:+{2}-/2'
+  )
+  if [[ -n "$selected" ]]; then
+    local files=()
+    local line
+    while IFS= read -r line; do
+      local file="${line%%:*}"
+      local lineno="${line#*:}"; lineno="${lineno%%:*}"
+      files+=("+${lineno} ${(q)file}")
+    done <<< "$selected"
+    LBUFFER+="${EDITOR:-nano} ${files[@]}"
+  fi
+  zle reset-prompt
+}
+zle -N __fzf_rg_widget
+bindkey '^g' __fzf_rg_widget
 
 TRAPWINCH() {
   zle && { zle reset-prompt; zle -R }
