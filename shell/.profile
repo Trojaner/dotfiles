@@ -30,4 +30,9 @@ if [ -f /var/run/reboot-required ]; then
   cat /var/run/reboot-required
 fi
 
-. "$HOME/.local/bin/env"
+export _ZO_DOCTOR=0
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+
+if [ -f "$HOME/.local/bin/env" ]; then
+  . "$HOME/.local/bin/env"
+fi
