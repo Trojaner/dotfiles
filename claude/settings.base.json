@@ -14,5 +14,9 @@
   "editorMode": "normal",
   "verbose": true,
   "preferredNotifChannel": "auto",
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "worktree": {
+    "baseRef": "head",
+    "bgIsolation": "none"
+  }
 }
