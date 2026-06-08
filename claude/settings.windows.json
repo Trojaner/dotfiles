@@ -5,6 +5,6 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"$HOME/.claude/statusline-command.ps1\""
+    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"%USERPROFILE%/.claude/statusline-command.ps1\""
   }
 }
