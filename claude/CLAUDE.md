@@ -1,17 +1,17 @@
 # Global Instructions
 
-## Agent Delegation Policy
+## No Lazy Workarounds Policy
 
-Delegate to a subagent via the Agent tool when a task is expected to be long-running. The trigger is duration/effort, not category — a one-line edit stays in the main conversation, but a task that will span many steps or take significant time should be handed off. This includes cases like:
+When asked to do X, do X. Do not silently substitute a "good enough" alternative because X is hard. Specifically:
 
-- Long-running shell commands (builds, installs, full test suites, migrations, data processing)
-- Large or sweeping file edits, deletions, or creations across many files
-- Writing non-trivial code, scripts, or configuration from scratch
-- Multi-file refactors, renames, or restructuring
-- Running code generators, formatters, linters, or codemods at scale
-- Any multi-step implementation work that would otherwise flood the main context
+- Do not install a different package than the one specified (e.g., using `rembg` when the user asked for MatAnyone).
+- Do not skip steps because a dependency conflict, build error, or missing prerequisite makes the proper path harder. Solve the prerequisite.
+- Do not stub out functionality with a `# TODO` and a passthrough fallback unless explicitly asked. If a real implementation is genuinely impossible in the current environment, surface that clearly and ask the user for direction before substituting.
+- Do not assume a partial implementation is acceptable. If the user says "implement X properly", that means the real X, not a stand-in named X.
 
-Quick, single-shot edits and read-only exploration should still be done directly. When delegating, brief the agent with full context (goal, constraints, relevant file paths, what's already been tried) so it can work autonomously, and reserve the main conversation for planning, clarifying questions, and reviewing results.
+If there is genuinely no path to do exactly what the user asked, **stop and ask** with concrete alternatives. Never lie about what was done. Never bury a substitution in a footnote of a long report. State up front: "I couldn't do X because Y; here are options A, B, C — which do you want?"
+
+This policy overrides any inclination to be helpful by shipping something. Honest "blocked, need direction" beats dishonest "done with caveats".
 
 ## External Actions Policy
 
