@@ -5,4 +5,5 @@
     editor = nano
 
 [credential]
-    helper = osxkeychain
+	helper = osxkeychain
+	credentialStore = dpapi
