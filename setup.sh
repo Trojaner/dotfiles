@@ -80,7 +80,10 @@ if __is_macos; then
 else
   ensure_packages_exist nano xclip xdg-utils unzip tmux tmuxinator lm-sensors libnotify-bin golang entr python3-pip pipx htop ninja-build
 fi
-pipx ensurepath
+
+python3 -m pip install --user pipx --break-system-packages
+python3 -m pipx ensurepath
+
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # zsh, oh-my-zsh, antidote
@@ -182,6 +185,13 @@ else
   ln -sf $BASE_DIR/git/.gitconfig.linux $HOME_DIR/.gitconfig
 fi
 
+# node
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+nvm install v24.18.0
+
 # claude code
 npm install -g @anthropic-ai/claude-code
 mkdir -p $HOME_DIR/.claude
@@ -238,11 +248,8 @@ if ! __is_macos; then
 fi
 
 if __is_wsl; then
-  ensure_packages_exist socat golang-go
-  go get -d github.com/jstarks/npiperelay
-
-  GOOS=windows go build -o /mnt/c/Users/Public/go/bin/npiperelay.exe github.com/jstarks/npiperelay
-  run_with_sudo ln -s /mnt/c/Users/Public/go/bin/npiperelay.exe /usr/local/bin/npiperelay.exe
+  ensure_packages_exist socat golang-go gcc-mingw-w64
+  GOOS=windows CC=x86_64-w64-mingw32-gcc go install github.com/jstarks/npiperelay@latest
 
   if [ ! -f /etc/wsl.conf ]; then
     echo "[boot]" | run_with_sudo tee /etc/wsl.conf
@@ -255,8 +262,3 @@ fi
 
 
 echo "Done!"
-
-# Sourcing the user zshrc here is best-effort: it expects an interactive
-# shell environment without `set -u`, so relax safety just for this final step.
-set +u +e +o pipefail
-. $HOME_DIR/.zshrc

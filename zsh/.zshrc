@@ -51,6 +51,7 @@ export HISTDB_DEFAULT_TAB=Host
 if __is_wsl; then
   precmd_functions+=(__wsl_precmd_current_path_prompt)
   source "$ZDOTDIR/relay-ssh-agent.sh"
+  append_path "$HOME/.go/bin/windows_amd64"
 fi
 
 skip_global_compinit=1
@@ -80,6 +81,7 @@ PATH_DIRECTORIES=(
   "$HOME/.local/bin"
   "$HOME/.cargo/bin"
   "$HOME/.krew/bin"
+  "$HOME/.go/bin"
   "/usr/local/bin"
   "/snap/bin"
 )
@@ -118,6 +120,8 @@ fi
 
 # go
 export GO111MODULE=on
+export GOPATH="$HOME/.go"
+export CGO_ENABLED=1
 
 # python
 export PYTHONIOENCODING=UTF-8
