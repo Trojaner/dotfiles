@@ -300,8 +300,57 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   fi
 fi
 
-# history search
-bindkey '^R' histdb-skim-widget
+# history search — Ctrl-R over histdb. Every keystroke re-queries the database
+# (fzf runs --disabled with change:reload) so ranking/filtering happens in SQL,
+# not over an already-fetched list. Backed by scripts/histdb-fzf.sh, resolved to
+# its real repo path via the :A modifier so no extra symlink is needed.
+#   • relevancy sort: exact-prefix > word-prefix > contains > fuzzy, and within
+#     that, commands run here and successful rank above global/failed ones.
+#   • execution-time sort: most recent matches first (substring match).
+#   • scope: global (default) / current dir / current dir + subdirs.
+#   ctrl-s cycles sort, ctrl-t cycles scope; the header shows the active modes.
+# Replaces the zsh-histdb-skim ^R widget (its binary hardcodes `order by start`).
+__histdb_helper="${ZDOTDIR:-$HOME/.zsh}/common_functions.sh"
+__histdb_helper="${__histdb_helper:A:h}/histdb-fzf.sh"
+
+__histdb_fzf_history_widget() {
+  emulate -L zsh
+  local selected id cmd state
+  local S=${(q)__histdb_helper}
+  state=$(mktemp -d "${TMPDIR:-/tmp}/histdb-ctlr.XXXXXX") || return
+  print -r -- relevancy > "$state/sort"
+  print -r -- global    > "$state/scope"
+
+  # env prefix baked into every fzf child command (not exported into the shell)
+  local E="HISTDB_FILE=${(q)HISTDB_FILE} HISTDB_STATE=${(q)state} HISTDB_PWD=${(q)PWD} HISTDB_LIMIT=1000"
+
+  {
+    selected=$(</dev/null fzf \
+      --ansi --disabled \
+      --delimiter='\t' --with-nth='2..' \
+      --layout=reverse --height=100% \
+      --query="$BUFFER" --header-first \
+      --header="$(eval "$E \"$__histdb_helper\" header")" \
+      --preview="$E $S preview {1}" \
+      --preview-window='right:55%:wrap' \
+      --bind="start:reload:$E $S search {q}" \
+      --bind="change:reload:$E $S search {q}" \
+      --bind="ctrl-s:execute-silent($E $S cycle-sort)+reload($E $S search {q})+transform-header($E $S header)" \
+      --bind="ctrl-t:execute-silent($E $S cycle-scope)+reload($E $S search {q})+transform-header($E $S header)")
+  } always {
+    [[ -n "$state" ]] && command rm -rf -- "$state"
+  }
+
+  if [[ -n "$selected" ]]; then
+    id="${selected%%$'\t'*}"
+    cmd=$(_histdb_query "SELECT commands.argv FROM history LEFT JOIN commands ON history.command_id = commands.id WHERE history.id = ${id} LIMIT 1")
+    BUFFER="$cmd"
+    CURSOR=$#BUFFER
+  fi
+  zle reset-prompt
+}
+zle -N __histdb_fzf_history_widget
+bindkey '^R' __histdb_fzf_history_widget
 
 zle-line-init() {}
 

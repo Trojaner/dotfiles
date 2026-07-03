@@ -220,13 +220,35 @@ __assert_zsh() {
   return 0
 }
 
+# Shared history ordering for the autosuggest strategy and the Ctrl-R widget
+# (defined in .zshrc). Ranks history rows into priority tiers, best first:
+#   0  successful (exit 0) command in the current directory
+#   1  any command in the current directory
+#   2  successful (exit 0) command anywhere
+#   3  any command anywhere
+# Within a tier the most recent command wins. This is packed into one sortable
+# key: tier * 10^10 - start_time, so a SMALLER key is better (the tier dominates
+# because 10^10 exceeds any unix start_time; a newer start_time breaks ties).
+# Wrap in MIN(...) over a `GROUP BY commands.argv` to collapse duplicates while
+# keeping each command's best occurrence, then `ORDER BY ... ASC`.
+_histdb_here_sortkey() {
+    # $1 = sql-escaped $PWD
+    print -r -- "(CASE
+        WHEN places.dir = '$1' AND history.exit_status = 0 THEN 0
+        WHEN places.dir = '$1' THEN 1
+        WHEN history.exit_status = 0 THEN 2
+        ELSE 3 END) * 10000000000 - history.start_time"
+}
+
 _zsh_autosuggest_strategy_histdb_top_here() {
-    local query="SELECT commands.argv FROM
-history LEFT JOIN commands ON history.command_id = commands.rowid
-LEFT JOIN places ON history.place_id = places.rowid
-WHERE places.dir LIKE '$(sql_escape $PWD)%'
-AND commands.argv LIKE '$(sql_escape $1)%'
-GROUP BY commands.argv ORDER BY places.dir != '$(sql_escape $PWD)', history.id DESC LIMIT 1"
+    local pwd_e="$(sql_escape "$PWD")"
+    local query="SELECT commands.argv FROM history
+LEFT JOIN commands ON history.command_id = commands.id
+LEFT JOIN places ON history.place_id = places.id
+WHERE commands.argv LIKE '$(sql_escape "$1")%'
+GROUP BY commands.argv
+ORDER BY MIN($(_histdb_here_sortkey "$pwd_e")) ASC
+LIMIT 1"
     local result
     result=$(_histdb_query "$query")
     result="${result%%$'\n'*}"
