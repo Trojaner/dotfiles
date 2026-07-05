@@ -150,7 +150,12 @@ alias kubectx='kubectl ctx'
 alias kubens='kubectl ns'
 alias python='python3'
 alias tmux='tmux -u -2'
-alias rsync='rsync -rukLEptIh --stats --info=progress2 --info=name0'
+
+if [ -f "/opt/homebrew/bin/rsync" ]; then
+   alias rsync='/opt/homebrew/bin/rsync -rukLEptIh --stats --info=progress2 --info=name0'
+else
+   alias rsync='rsync -rukLEptIh --stats --info=progress2 --info=name0'
+fi
 
 [[ "$OSTYPE" == "linux-gnu"* ]] && alias sysctl='/usr/sbin/sysctl'
 
