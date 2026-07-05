@@ -76,14 +76,29 @@ source "${_histdb_dir}/sqlite-history.zsh"
 source "${_histdb_dir}/histdb-interactive.zsh"
 unset _histdb_dir
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  if [ -f "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+
+  # brew shellenv forces /opt/homebrew to the front of PATH; move it to the
+  # end so system binaries (e.g. /usr/bin/rsync) resolve before homebrew ones
+  path=(${path:#/opt/homebrew/(bin|sbin)} /opt/homebrew/bin /opt/homebrew/sbin)
+
+  if [ -f "/opt/homebrew/bin/pyenv" ]; then
+    eval "$(pyenv init -)"
+  fi
+fi
+
 PATH_DIRECTORIES=(
+  "/bin/local"
+  "/usr/local/bin"
+  "/snap/bin"
   "$HOME/bin"
   "$HOME/.local/bin"
   "$HOME/.cargo/bin"
   "$HOME/.krew/bin"
   "$HOME/.go/bin"
-  "/usr/local/bin"
-  "/snap/bin"
 )
 
 append_path "${PATH_DIRECTORIES[@]}"
@@ -135,8 +150,7 @@ alias kubectx='kubectl ctx'
 alias kubens='kubectl ns'
 alias python='python3'
 alias tmux='tmux -u -2'
-alias rs='rsync -vPh --info=progress2 --no-i-r'
-alias rsync='rsync -vPh --info=progress2 --no-i-r'
+alias rsync='rsync -rukLEptIh --stats --info=progress2 --info=name0'
 
 [[ "$OSTYPE" == "linux-gnu"* ]] && alias sysctl='/usr/sbin/sysctl'
 
@@ -259,22 +273,9 @@ if [[ "$TERM" == "linux" ]]; then
   echo -en "\e]PFC0C0C0" #white
 fi
 
-# macos specific
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  export PATH="/opt/homebrew/bin${PATH:+:${PATH}}"
-
-  if [ -f "/opt/homebrew/bin/brew" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  fi
-
-  if [ -f "/opt/homebrew/bin/pyenv" ]; then
-    eval "$(pyenv init -)"
-  fi
-fi
-
 # linux specific
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  export XAUTHORITY=$HOME/.Xauthority
+  export XAUTHORITY="$HOME/.Xauthority"
   export LIBGL_ALWAYS_INDIRECT=1
   export XCURSOR_SIZE=64
   export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
