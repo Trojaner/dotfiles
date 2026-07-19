@@ -5,6 +5,8 @@
 	editor = \"C:\\Users\\esozb\\AppData\\Local\\Programs\\Microsoft VS Code Insiders\\bin\\code-insiders\" --wait
     sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
     autocrlf = true
+    fsmonitor = true
+    untrackedCache = true
 
 [credential]
     helper = manager
