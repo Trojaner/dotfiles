@@ -14,6 +14,16 @@ if (Test-Path  $PROFILE.CurrentUserAllHosts) {
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
+# Windows Defender process exclusions for the dev toolchain to speed up git status and builds.
+# Requires an elevated session; skipped with a warning otherwise.
+if (([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    'git.exe', 'node.exe', 'dotnet.exe', 'MSBuild.exe', 'oh-my-posh.exe', 'pwsh.exe' |
+        ForEach-Object { Add-MpPreference -ExclusionProcess $_ }
+}
+else {
+    Write-Warning 'Skipping Windows Defender exclusions (run setup.ps1 as Administrator to apply them).'
+}
+
 winget install --exact --source winget --id=JanDeDobbeleer.OhMyPosh --scope user --accept-source-agreements --silent
 winget install --exact --source winget --id=magic-wormhole.magic-wormhole --scope user --accept-source-agreements --silent
 winget install --exact --source winget --id=junegunn.fzf --scope user --accept-source-agreements --silent
@@ -28,11 +38,8 @@ Enable-ExperimentalFeature PSFeedbackProvider
 Enable-ExperimentalFeature PSNativeWindowsTildeExpansion
 Enable-ExperimentalFeature PSSubsystemPluginModel
 
-Install-PSResource -Repository PSGallery -Name CompletionPredictor -Scope CurrentUser
-Install-PSResource -Repository PSGallery -Name Get-ChildItemColor -Scope CurrentUser
 Install-PSResource -Repository PSGallery -Name Microsoft.WinGet.Client -Scope CurrentUser
 Install-PSResource -Repository PSGallery -Name Microsoft.WinGet.CommandNotFound -Scope CurrentUser
-Install-PSResource -Repository PSGallery -Name posh-git -Scope CurrentUser
 Install-PSResource -Repository PSGallery -Name PSReadLine -Scope CurrentUser
 Install-PSResource -Repository PSGallery -Name Terminal-Icons -Scope CurrentUser
 
