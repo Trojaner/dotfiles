@@ -6,3 +6,7 @@
 
 [credential]
     helper = store
+[user]
+	signingkey = ~/.ssh/id_ed25519_github_signing.pub
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
