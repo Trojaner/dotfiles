@@ -99,6 +99,7 @@ PATH_DIRECTORIES=(
   "$HOME/.cargo/bin"
   "$HOME/.krew/bin"
   "$HOME/.go/bin"
+  "$HOME/.dotnet/tools"
 )
 
 append_path "${PATH_DIRECTORIES[@]}"
