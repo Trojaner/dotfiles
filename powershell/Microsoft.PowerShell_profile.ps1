@@ -91,7 +91,7 @@ Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 # ---------------------------------------------------------------------------
 $Deferred = {
     foreach ($m in 'Terminal-Icons', 'Microsoft.WinGet.Client', 'Microsoft.WinGet.CommandNotFound') {
-        try { Import-Module -Name $m -ErrorAction Stop } catch { Write-Warning "Deferred import of $m failed: $_" }
+        try { Import-Module -Name $m -ErrorAction Stop } catch { Write-Warning "Deferred import of $m failed: $($_.Exception.Message)" }
     }
     if ($env:TERM_PROGRAM -eq 'vscode' -and (Get-Command code-insiders -ErrorAction SilentlyContinue)) {
         try { . "$(code-insiders --locate-shell-integration-path pwsh)" } catch { }
