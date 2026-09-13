@@ -7,3 +7,14 @@
 [credential]
 	helper = osxkeychain
 	credentialStore = dpapi
+[user]
+	signingkey = /Users/esozbek/.ssh/id_ed25519_signing
+
+[gpg "ssh"]
+	allowedSignersFile = /Users/esozbek/.ssh/allowed_signers
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
