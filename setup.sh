@@ -153,6 +153,24 @@ mkdir -p $HOME_DIR/.tmux
 ln -sf $BASE_DIR/tmux/.tmux.conf $HOME_DIR/.tmux.conf
 ln -sf $BASE_DIR/tmux/show-tmux-popup.sh $HOME_DIR/.tmux/show-tmux-popup.sh
 
+# tmux server for VS Code terminals (socket "vscode")
+mkdir -p $HOME_DIR/.config/tmux
+for f in vscode.conf vscode-reap.sh vscode-renumber.sh vscode-goto.sh; do
+  ln -sf $BASE_DIR/tmux/vscode/$f $HOME_DIR/.config/tmux/$f
+done
+
+if __is_macos; then
+  TMUX_VSCODE_LABEL=com.esozbek.tmux-vscode
+  TMUX_VSCODE_PLIST=$HOME_DIR/Library/LaunchAgents/$TMUX_VSCODE_LABEL.plist
+  BREW_PREFIX=$(brew --prefix)
+  mkdir -p $HOME_DIR/Library/LaunchAgents $HOME_DIR/Library/Logs/tmux-server
+  sed -e "s|@HOME@|$HOME_DIR|g" -e "s|@BREW_PREFIX@|$BREW_PREFIX|g" \
+    $BASE_DIR/tmux/vscode/$TMUX_VSCODE_LABEL.plist > $TMUX_VSCODE_PLIST
+  if ! launchctl print gui/$(id -u)/$TMUX_VSCODE_LABEL >/dev/null 2>&1; then
+    launchctl bootstrap gui/$(id -u) $TMUX_VSCODE_PLIST
+  fi
+fi
+
 if [ ! -d $HOME_DIR/.tmux/plugins/tpm ]; then
   git clone https://github.com/tmux-plugins/tpm $HOME_DIR/.tmux/plugins/tpm
 else

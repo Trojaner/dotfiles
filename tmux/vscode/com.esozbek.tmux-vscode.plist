@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.esozbek.tmux-vscode</string>
+  <!-- Separate tmux server (socket "vscode", minimal ~/.config/tmux/vscode.conf)
+       for remote VS Code terminals, kept in the foreground with -D so it stays
+       in the Aqua session and its shells can use the login keychain. -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>@BREW_PREFIX@/bin/tmux</string>
+    <string>-u</string>
+    <string>-L</string>
+    <string>vscode</string>
+    <string>-f</string>
+    <string>@HOME@/.config/tmux/vscode.conf</string>
+    <string>-D</string>
+  </array>
+  <key>LimitLoadToSessionType</key>
+  <string>Aqua</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>@HOME@/.local/bin:@BREW_PREFIX@/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>LANG</key>
+    <string>en_US.UTF-8</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>@HOME@/Library/Logs/tmux-server/vscode.log</string>
+  <key>StandardErrorPath</key>
+  <string>@HOME@/Library/Logs/tmux-server/vscode.log</string>
+</dict>
+</plist>
