@@ -26,6 +26,14 @@ Do NOT perform external or side-effecting actions without explicit user consent 
 
 Always ask for confirmation before performing any of these actions, even if the task seems to imply them.
 
+### Pushes need consent every time
+
+Never `git push` (including force pushes and anything that pushes as a side effect, such as `gh pr create`) unless the user explicitly asked for or approved that push. Approval to open or update a pull request earlier in the conversation does not cover later pushes to it: every new push needs its own request or consent.
+
+## Branches and Worktrees Policy
+
+Never create a new git branch or worktree (`git branch <new>`, `git checkout -b`, `git switch -c`, `git worktree add`, `EnterWorktree`, subagents with worktree isolation) unless the user explicitly asked for it or approved it. Work that looks separable, such as an unrelated bug found along the way, stays on the current branch or you ask first; do not spin it off on your own judgement.
+
 ## Destructive Actions Policy
 
 Never perform destructive or irreversible actions unless explicitly instructed, consented to, or clearly part of the task. This includes but is not limited to:
