@@ -151,6 +151,7 @@ alias kubectx='kubectl ctx'
 alias kubens='kubectl ns'
 alias python='python3'
 alias tmux='tmux -u -2'
+alias muse='muse --disable-sandbox'
 
 if [ -f "/opt/homebrew/bin/rsync" ]; then
    alias rsync='/opt/homebrew/bin/rsync -rukLEptIh --stats --info=progress2 --info=name0'
@@ -482,3 +483,4 @@ if [[ $- == *i* ]]; then
 fi
 
 eval "$(zoxide init --cmd cd zsh)"
+export PATH=$PATH:$HOME/.maestro/bin
