@@ -155,7 +155,7 @@ ln -sf $BASE_DIR/tmux/show-tmux-popup.sh $HOME_DIR/.tmux/show-tmux-popup.sh
 
 # tmux server for VS Code terminals (socket "vscode")
 mkdir -p $HOME_DIR/.config/tmux
-for f in vscode.conf vscode-reap.sh vscode-renumber.sh vscode-goto.sh vscode-step.sh; do
+for f in vscode.conf vscode-reap.sh vscode-renumber.sh vscode-goto.sh vscode-step.sh vscode-bell.sh vscode-pick.sh; do
   ln -sf $BASE_DIR/tmux/vscode/$f $HOME_DIR/.config/tmux/$f
 done
 
