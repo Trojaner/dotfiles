@@ -4,8 +4,6 @@
   },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
     "prisma@claude-plugins-official": true,
     "mongodb@claude-plugins-official": true
   },

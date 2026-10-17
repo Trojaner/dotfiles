@@ -55,6 +55,16 @@ if (Test-Path alias:WGet) {
     Remove-Item alias:WGet 
 }
 
+# Resolve the external command explicitly to avoid calling this function again.
+function codex {
+    $executable = (Get-Command codex -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
+    if ($args.Count -eq 0) {
+        & $executable --sandbox danger-full-access
+    } else {
+        & $executable @args
+    }
+}
+
 # PSReadLine drives the line editor, so it must be present before the first keystroke.
 Import-Module -Name PSReadLine
 

@@ -43,3 +43,15 @@ All configurations are symlinked to the local repo directory for easy updates, s
 - GitHub aliases
 - GPG commit signing
 - Rebase on pull and merge
+
+## Codex configuration
+
+The setup scripts link `codex/config.toml` and `codex/AGENTS.md` into
+`~/.codex` (or `CODEX_HOME` when set). Linked files stay in sync with this repo.
+Existing files are preserved in a `dotfiles-backup.*` directory before linking.
+Authentication, sessions, and other runtime files remain local.
+To link only Codex configuration on Linux or macOS, run `zsh codex/setup.sh`.
+
+In zsh and PowerShell, bare `codex` runs `codex --sandbox danger-full-access`.
+Calls with arguments, including `codex resume` and `codex --help`, pass through
+unchanged. Reload your shell after updating its profile.

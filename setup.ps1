@@ -67,6 +67,27 @@ New-Item -Path "$HOME\.claude\statusline-command.sh" -ItemType SymbolicLink -Val
 New-Item -Path "$HOME\.claude\statusline-command.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.ps1").Path | Out-Null
 New-Item -Path "$HOME\.claude\CLAUDE.md" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\CLAUDE.md").Path | Out-Null
 
+# Codex configuration: preserve existing files before linking shared defaults.
+$codexDir = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME '.codex' }
+New-Item -Path $codexDir -ItemType Directory -Force | Out-Null
+$codexBackup = $null
+foreach ($name in 'config.toml', 'AGENTS.md') {
+    $sourceFile = (Resolve-Path (Join-Path $PSScriptRoot "codex/$name")).Path
+    $targetFile = Join-Path $codexDir $name
+    $existing = Get-Item -LiteralPath $targetFile -Force -ErrorAction SilentlyContinue
+    if ($existing -and $existing.LinkType -eq 'SymbolicLink' -and $existing.Target -eq $sourceFile) {
+        continue
+    }
+    if ($existing) {
+        if (-not $codexBackup) {
+            $codexBackup = Join-Path $codexDir ("dotfiles-backup." + [guid]::NewGuid().ToString('N'))
+            New-Item -Path $codexBackup -ItemType Directory | Out-Null
+        }
+        Move-Item -LiteralPath $targetFile -Destination (Join-Path $codexBackup $name)
+    }
+    New-Item -Path $targetFile -ItemType SymbolicLink -Value $sourceFile | Out-Null
+}
+
 $insidersBin = "$env:LOCALAPPDATA\Programs\Microsoft VS Code Insiders\bin"
 New-Item -Path "$insidersBin\code.cmd" -ItemType SymbolicLink -Value "$insidersBin\code-insiders.cmd" -Force | Out-Null
 

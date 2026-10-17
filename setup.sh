@@ -222,6 +222,9 @@ ln -sf $BASE_DIR/claude/settings.json $HOME_DIR/.claude/settings.json
 ln -sf $BASE_DIR/claude/statusline-command.sh $HOME_DIR/.claude/statusline-command.sh
 ln -sf $BASE_DIR/claude/CLAUDE.md $HOME_DIR/.claude/CLAUDE.md
 
+# codex configuration
+zsh "$BASE_DIR/codex/setup.sh"
+
 # tig (macOS ships ncurses; install via Homebrew which is simpler than building)
 if __is_macos; then
   ensure_packages_exist tig
