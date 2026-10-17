@@ -153,10 +153,10 @@ alias python='python3'
 alias tmux='tmux -u -2'
 alias muse='muse --disable-sandbox'
 
-# Add the sandbox override only when no arguments were supplied.
+# Open the agents view only when no arguments were supplied.
 codex() {
   if (( $# == 0 )); then
-    command codex --sandbox danger-full-access
+    command codex agents
   else
     command codex "$@"
   fi

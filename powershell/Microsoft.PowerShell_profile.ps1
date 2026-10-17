@@ -59,7 +59,7 @@ if (Test-Path alias:WGet) {
 function codex {
     $executable = (Get-Command codex -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
     if ($args.Count -eq 0) {
-        & $executable --sandbox danger-full-access
+        & $executable agents
     } else {
         & $executable @args
     }

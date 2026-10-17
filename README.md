@@ -52,6 +52,8 @@ Existing files are preserved in a `dotfiles-backup.*` directory before linking.
 Authentication, sessions, and other runtime files remain local.
 To link only Codex configuration on Linux or macOS, run `zsh codex/setup.sh`.
 
-In zsh and PowerShell, bare `codex` runs `codex --sandbox danger-full-access`.
+In zsh and PowerShell, bare `codex` opens the agents view with `codex agents`.
+The shared configuration defaults to Approve for me: automatic approval review
+with on-request approvals and the workspace-write sandbox.
 Calls with arguments, including `codex resume` and `codex --help`, pass through
 unchanged. Reload your shell after updating its profile.
