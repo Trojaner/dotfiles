@@ -59,9 +59,18 @@ New-Item -Path "$HOME\.gitconfig" -ItemType SymbolicLink -Value (Resolve-Path ".
 New-Item -Path "$HOME\.claude" -ItemType Directory -Force | Out-Null
 $base = Get-Content ".\claude\settings.base.json" -Raw | ConvertFrom-Json -AsHashtable
 $platform = Get-Content ".\claude\settings.windows.json" -Raw | ConvertFrom-Json -AsHashtable
-foreach ($key in $platform.Keys) {
-    $base[$key] = $platform[$key]
+# Deep merge (like jq's `*` in setup.sh) so nested objects such as env keep keys from both files
+function Merge-Settings($target, $source) {
+    foreach ($key in $source.Keys) {
+        if ($target[$key] -is [hashtable] -and $source[$key] -is [hashtable]) {
+            Merge-Settings $target[$key] $source[$key]
+        }
+        else {
+            $target[$key] = $source[$key]
+        }
+    }
 }
+Merge-Settings $base $platform
 $base | ConvertTo-Json -Depth 10 | Set-Content "$HOME\.claude\settings.json"
 New-Item -Path "$HOME\.claude\statusline-command.sh" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.sh").Path | Out-Null
 New-Item -Path "$HOME\.claude\statusline-command.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.ps1").Path | Out-Null
