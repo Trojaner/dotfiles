@@ -87,10 +87,10 @@ ui)
   trap 'rm -f "$state"' EXIT
   pos=$(tmux display -p -t "$(tmux list-clients -F '#{client_name}|#{session_id}' | awk -F '|' -v c="$client" '$1 == c { print $2; exit }')" '#{@tab_index}')
   printf '%s' "$pos" > "$state"
-  legend=$(printf '\033[38;2;139;233;253m⏎\033[38;2;98;114;164m go  \033[38;2;139;233;253m1-9\033[38;2;98;114;164m jump  \033[38;2;139;233;253mp\033[38;2;98;114;164m pin  \033[38;2;139;233;253mr\033[38;2;98;114;164m rename\n\033[38;2;139;233;253mx\033[38;2;98;114;164m close  \033[38;2;139;233;253m⇧↑ ⇧↓\033[38;2;98;114;164m move  \033[38;2;139;233;253mesc\033[38;2;98;114;164m quit')
+  legend=$(printf '\033[38;2;139;233;253m⏎\033[38;2;98;114;164m go  \033[38;2;139;233;253m1-9\033[38;2;98;114;164m jump  \033[38;2;139;233;253mt\033[38;2;98;114;164m pin  \033[38;2;139;233;253mr\033[38;2;98;114;164m rename\n\033[38;2;139;233;253mx\033[38;2;98;114;164m close  \033[38;2;139;233;253m⇧↑ ⇧↓\033[38;2;98;114;164m move  \033[38;2;139;233;253mesc\033[38;2;98;114;164m quit')
   set -- \
     --bind "enter:become($self go $client {1})" \
-    --bind "p:execute-silent($self pin $client {1})+reload($self list $client)" \
+    --bind "t:execute-silent($self pin $client {1})+reload($self list $client)" \
     --bind "x:execute($self close {1})+reload($self list $client)" \
     --bind "r:execute($self rename {1})+reload($self list $client)" \
     --bind "shift-up:execute-silent($self move {1} -1 $state)+reload($self list $client)" \
