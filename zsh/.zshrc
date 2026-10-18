@@ -146,7 +146,6 @@ export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 # aliases
 # alias cd='z'
-alias ls='eza -lah --icons=always --color=always --created --changed --git --no-quotes'
 alias kubectx='kubectl ctx'
 alias kubens='kubectl ns'
 alias python='python3'
