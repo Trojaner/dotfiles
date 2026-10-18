@@ -52,6 +52,38 @@ Existing files are preserved in a `dotfiles-backup.*` directory before linking.
 Authentication, sessions, and other runtime files remain local.
 To link only Codex configuration on Linux or macOS, run `zsh codex/setup.sh`.
 
+Codex setup also installs hourly memory maintenance on macOS, Linux and Windows.
+The runner keeps its own stdio app-server alive until consolidation finishes, so
+short-lived sessions cannot interrupt it. It uses Python's standard library and a
+SQLite lock to prevent overlapping runs, with no Unix socket or file-lock module.
+An installed, authenticated Codex CLI and `uv` are required; setup creates a Python
+3.12 environment automatically. The Windows installer installs `uv` with WinGet
+when needed.
+
+| Platform | Scheduler | Logs |
+|---|---|---|
+| macOS | User LaunchAgent | `~/Library/Logs/codex-memory-consolidation/` |
+| Linux (including WSL with systemd) | systemd user service and hourly timer | `${XDG_STATE_HOME:-~/.local/state}/codex-memory-consolidation/` |
+| Windows | Task Scheduler, current interactive user, hourly and after login | `%LOCALAPPDATA%\CodexMemoryConsolidation\logs\` |
+
+To install memory maintenance independently, run `sh codex/setup-memory.sh` on
+macOS/Linux or `.\codex\setup-memory.ps1` in Windows PowerShell. Linux requires a
+working systemd user manager. User schedulers run within your login session;
+Linux users who need operation after logout can configure systemd user lingering
+separately. Windows tasks use the current user without storing a password or
+requiring administrator privileges. Windows copies the runner; rerun setup to
+refresh it after repo changes. Unix installs a symlink.
+
+Existing runners and changed scheduler configuration are backed up under
+`$CODEX_HOME/memory-maintenance/` before replacement. An already loaded macOS
+LaunchAgent keeps its current settings until the next login. Authentication,
+memory contents, database snapshots and logs stay outside the repo. The runner
+targets the memory schema used by Codex 0.163.0 (`memories_1.sqlite`).
+
+Run the regression tests with `python3 codex/test_memory_consolidate.py` (or
+`python codex/test_memory_consolidate.py` on Windows). Tests use temporary memory
+state and a local protocol test server; they do not submit memories to a model.
+
 In zsh and PowerShell, bare `codex` opens the agents view with `codex agents`.
 The shared configuration defaults to Approve for me: automatic approval review
 with on-request approvals and the workspace-write sandbox.

@@ -88,6 +88,9 @@ foreach ($name in 'config.toml', 'AGENTS.md') {
     New-Item -Path $targetFile -ItemType SymbolicLink -Value $sourceFile | Out-Null
 }
 
+# Per-user hourly memory maintenance (no administrator task credentials).
+& (Join-Path $PSScriptRoot 'codex/setup-memory.ps1')
+
 $insidersBin = "$env:LOCALAPPDATA\Programs\Microsoft VS Code Insiders\bin"
 New-Item -Path "$insidersBin\code.cmd" -ItemType SymbolicLink -Value "$insidersBin\code-insiders.cmd" -Force | Out-Null
 

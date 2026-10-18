@@ -18,3 +18,6 @@ for name in config.toml AGENTS.md; do
   fi
   ln -s "$source_file" "$target_file"
 done
+
+# Memory maintenance runs independently of short-lived sessions.
+zsh "$REPO_DIR/codex/setup-memory.sh"
