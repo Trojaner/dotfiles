@@ -7,6 +7,7 @@ mkdir -p "$CODEX_DIR"
 backup_dir=""
 for name in config.toml AGENTS.md; do
   source_file="$REPO_DIR/codex/$name"
+  [[ "$name" == AGENTS.md ]] && source_file="$REPO_DIR/agents/AGENTS.md"
   target_file="$CODEX_DIR/$name"
   [[ "$target_file" -ef "$source_file" ]] && continue
   if [[ -e "$target_file" || -L "$target_file" ]]; then

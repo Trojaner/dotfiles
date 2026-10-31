@@ -1,0 +1,19 @@
+# Foreground tmux server (tmux -D) owned by the user's systemd manager. Every
+# claude-rc tmux session lives under this unit, so its processes keep running
+# after the oneshot claude-rc@ launcher that created them exits. Without this a
+# launcher would start a daemonized server inside its own oneshot unit, and
+# systemd would kill that server (and every session on it) as soon as the
+# launcher finished.
+[Unit]
+Description=tmux server for claude rc instances
+
+[Service]
+Type=simple
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=LANG=C.UTF-8
+ExecStart=/usr/bin/tmux -u -D
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

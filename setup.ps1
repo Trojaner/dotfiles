@@ -76,12 +76,17 @@ New-Item -Path "$HOME\.claude\statusline-command.sh" -ItemType SymbolicLink -Val
 New-Item -Path "$HOME\.claude\statusline-command.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.ps1").Path | Out-Null
 New-Item -Path "$HOME\.claude\CLAUDE.md" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\CLAUDE.md").Path | Out-Null
 
+# Shared agent instructions; claude/CLAUDE.md imports ~/.agents/AGENTS.md.
+New-Item -Path "$HOME\.agents" -ItemType Directory -Force | Out-Null
+New-Item -Path "$HOME\.agents\AGENTS.md" -ItemType SymbolicLink -Value (Resolve-Path ".\agents\AGENTS.md").Path -Force | Out-Null
+
 # Codex configuration: preserve existing files before linking shared defaults.
 $codexDir = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME '.codex' }
 New-Item -Path $codexDir -ItemType Directory -Force | Out-Null
 $codexBackup = $null
 foreach ($name in 'config.toml', 'AGENTS.md') {
-    $sourceFile = (Resolve-Path (Join-Path $PSScriptRoot "codex/$name")).Path
+    $sourcePath = if ($name -eq 'AGENTS.md') { 'agents/AGENTS.md' } else { "codex/$name" }
+    $sourceFile = (Resolve-Path (Join-Path $PSScriptRoot $sourcePath)).Path
     $targetFile = Join-Path $codexDir $name
     $existing = Get-Item -LiteralPath $targetFile -Force -ErrorAction SilentlyContinue
     if ($existing -and $existing.LinkType -eq 'SymbolicLink' -and $existing.Target -eq $sourceFile) {
@@ -99,6 +104,23 @@ foreach ($name in 'config.toml', 'AGENTS.md') {
 
 # Per-user hourly memory maintenance (no administrator task credentials).
 & (Join-Path $PSScriptRoot 'codex/setup-memory.ps1')
+
+# Agent skills from agent-skills/<agent>/, linked like agent-skills/setup.sh does on macOS and Linux.
+$claudeConfigDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $HOME '.claude' }
+$skillRoots = @{ 'claude' = (Join-Path $claudeConfigDir 'skills'); 'codex' = (Join-Path $codexDir 'skills') }
+foreach ($agent in $skillRoots.Keys) {
+    $targetRoot = $skillRoots[$agent]
+    New-Item -Path $targetRoot -ItemType Directory -Force | Out-Null
+    foreach ($skill in Get-ChildItem -Directory (Join-Path $PSScriptRoot "agent-skills/$agent")) {
+        $target = Join-Path $targetRoot $skill.Name
+        $existing = Get-Item -LiteralPath $target -Force -ErrorAction SilentlyContinue
+        if ($existing -and $existing.LinkType -eq 'SymbolicLink' -and $existing.Target -eq $skill.FullName) { continue }
+        if ($existing) {
+            Move-Item -LiteralPath $target -Destination "$target.dotfiles-backup.$(Get-Date -Format yyyyMMddHHmmss)"
+        }
+        New-Item -Path $target -ItemType SymbolicLink -Value $skill.FullName | Out-Null
+    }
+}
 
 $insidersBin = "$env:LOCALAPPDATA\Programs\Microsoft VS Code Insiders\bin"
 New-Item -Path "$insidersBin\code.cmd" -ItemType SymbolicLink -Value "$insidersBin\code-insiders.cmd" -Force | Out-Null

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.esozbek.claude-rc-@NAME@</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>@HOME@/.local/bin/start-claude-rc-@NAME@.sh</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>@WORKDIR@</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <!-- The script is idempotent and cheap when the session is already up.
+       Re-running it every 120s is what recreates the tmux session if it dies,
+       and covers a transient failure at login when the network is not ready. -->
+  <key>StartInterval</key>
+  <integer>120</integer>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>@HOME@/.local/bin:@BREW_PREFIX@/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>@HOME@/Library/Logs/claude-rc-@NAME@/launchd.log</string>
+  <key>StandardErrorPath</key>
+  <string>@HOME@/Library/Logs/claude-rc-@NAME@/launchd.log</string>
+</dict>
+</plist>

@@ -222,8 +222,16 @@ ln -sf $BASE_DIR/claude/settings.json $HOME_DIR/.claude/settings.json
 ln -sf $BASE_DIR/claude/statusline-command.sh $HOME_DIR/.claude/statusline-command.sh
 ln -sf $BASE_DIR/claude/CLAUDE.md $HOME_DIR/.claude/CLAUDE.md
 
+# shared agent instructions: claude/CLAUDE.md imports ~/.agents/AGENTS.md, Muse Code reads its own copy
+mkdir -p $HOME_DIR/.agents $HOME_DIR/.config/muse
+ln -sf $BASE_DIR/agents/AGENTS.md $HOME_DIR/.agents/AGENTS.md
+ln -sf $BASE_DIR/agents/AGENTS.md $HOME_DIR/.config/muse/AGENTS.md
+
 # codex configuration
 zsh "$BASE_DIR/codex/setup.sh"
+
+# skills that move sessions and memories between Claude Code, Codex and Muse Code
+zsh "$BASE_DIR/agent-skills/setup.sh"
 
 # tig (macOS ships ncurses; install via Homebrew which is simpler than building)
 if __is_macos; then

@@ -1,0 +1,16 @@
+# Ensures the tmux session claude-rc-<instance> is running `claude rc` through
+# the shared supervisor. Idempotent and cheap when the session is already up;
+# claude-rc@<instance>.timer runs it at boot and every 120s, which is what
+# recreates the session if it dies. %i is the instance name; its working
+# directory comes from ~/.config/claude-rc/<instance>.env (WORKDIR=...).
+[Unit]
+Description=claude rc instance %i (ensure tmux session)
+Requires=tmux-server.service
+After=tmux-server.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=%h/.config/claude-rc/%i.env
+ExecStart=%h/.local/bin/claude-rc-launch.sh %i

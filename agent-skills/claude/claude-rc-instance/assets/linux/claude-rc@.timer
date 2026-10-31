@@ -1,0 +1,13 @@
+# The systemd counterpart of the macOS LaunchAgent's RunAtLoad + StartInterval
+# 120: start the launcher shortly after the user manager starts, then every
+# 120s after each run.
+[Unit]
+Description=Keep claude rc instance %i running
+
+[Timer]
+OnStartupSec=15
+OnUnitActiveSec=120
+AccuracySec=10
+
+[Install]
+WantedBy=timers.target

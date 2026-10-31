@@ -44,9 +44,15 @@ All configurations are symlinked to the local repo directory for easy updates, s
 - GPG commit signing
 - Rebase on pull and merge
 
+## Agent instructions
+
+`agents/AGENTS.md` holds the global instructions for every coding agent. The setup
+scripts link it to `~/.agents/AGENTS.md`, `~/.codex/AGENTS.md` and (on macOS and Linux)
+`~/.config/muse/AGENTS.md`; `claude/CLAUDE.md` imports it with `@~/.agents/AGENTS.md`.
+
 ## Codex configuration
 
-The setup scripts link `codex/config.toml` and `codex/AGENTS.md` into
+The setup scripts link `codex/config.toml` and `agents/AGENTS.md` into
 `~/.codex` (or `CODEX_HOME` when set). Linked files stay in sync with this repo.
 Existing files are preserved in a `dotfiles-backup.*` directory before linking.
 Authentication, sessions, and other runtime files remain local.
@@ -89,3 +95,35 @@ The shared configuration defaults to Approve for me: automatic approval review
 with on-request approvals and the workspace-write sandbox.
 Calls with arguments, including `codex resume` and `codex --help`, pass through
 unchanged. Reload your shell after updating its profile.
+
+## Agent session skills
+
+`agent-skills/` holds skills that move sessions and memories between Claude Code,
+Codex and Muse Code. One shared script, `agent-skills/lib/agent_sessions.py`, does
+the work; each skill links to it.
+
+| Agent | Skills | Installed at |
+|---|---|---|
+| Claude Code | `/import-session codex\|muse <session>`, `/update-session codex\|muse` | `~/.claude/skills` (symlinks) |
+| Codex | `$import-session claude\|muse <session>`, `$update-session claude\|muse` | `~/.codex/skills` (symlinks) |
+| Muse Code | `/import-session claude\|codex <session>`, `/update-session claude\|codex` | `~/.config/muse/skills` (copies installed with `muse skills install`) |
+
+- `import-session <agent> <session>` imports one session (id, id prefix, name or
+  title; `all` for the whole workspace) as a native, resumable session of the
+  current agent. It keeps the working directory, every prompt and reply, and the
+  tool calls and results, mapped onto the target's own tools. It also imports that
+  workspace's memories and marks the workspace as trusted. Afterwards it offers to
+  continue work that was left unfinished, or recommends what to do next.
+- `update-session <agent>` finds the matching or most similar session on the other
+  agent, saves its raw transaction log in the current session's folder, has a
+  separate agent analyze it, and reports the summary and last actions.
+- `~/.local/state/agent-sessions/ledger.json` records every import, so reruns only
+  apply changes and nothing is imported back to where it came from.
+
+`agent-skills/claude/` also holds two Claude Code only skills for Remote Control
+listeners on macOS, Linux and Windows: `claude-rc-instance` sets up an always-on
+`claude rc` instance for a repo, and `/claude-rc-revive <session url>` brings an
+offline or archived session back to its instance.
+
+Run `zsh agent-skills/setup.sh` to install or refresh the skills. Rerun it after
+editing a Muse skill, because Muse keeps its own copies.
