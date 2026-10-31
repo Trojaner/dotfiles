@@ -153,13 +153,16 @@ alias tmux='tmux -u -2'
 alias muse='muse --disable-sandbox'
 
 # Open the agents view only when no arguments were supplied.
-codex() {
-  if (( $# == 0 )); then
-    command codex agents
-  else
-    command codex "$@"
-  fi
-}
+# Only in a real interactive terminal, so tool shells (and their snapshots) get the plain binary.
+if [[ -o interactive && -t 0 && -t 1 && -z $CLAUDECODE ]]; then
+  codex() {
+    if (( $# == 0 )); then
+      command codex agents
+    else
+      command codex "$@"
+    fi
+  }
+fi
 
 if [ -f "/opt/homebrew/bin/rsync" ]; then
    alias rsync='/opt/homebrew/bin/rsync -rukLEptIh --stats --info=progress2 --info=name0'
