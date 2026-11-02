@@ -1,4 +1,16 @@
 {
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$CLAUDE_ENV_FILE\" ]; then echo 'source \"$HOME/.zshenv\"' >> \"$CLAUDE_ENV_FILE\"; fi"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "bash $HOME/.claude/statusline-command.sh"

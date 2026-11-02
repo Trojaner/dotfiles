@@ -93,6 +93,8 @@ mkdir -p $ZDOTDIR
 ln -sf $BASE_DIR/scripts/common_functions.sh $ZDOTDIR/common_functions.sh
 ln -sf $BASE_DIR/scripts/relay-ssh-agent.sh $ZDOTDIR/relay-ssh-agent.sh
 ln -sf $BASE_DIR/zsh/.zsh_plugins.txt $ZDOTDIR/.zsh_plugins.txt
+ln -sf $BASE_DIR/zsh/.zshenv $HOME_DIR/.zshenv
+ln -sf $BASE_DIR/zsh/.zprofile $HOME_DIR/.zprofile
 ln -sf $BASE_DIR/zsh/.zshrc $HOME_DIR/.zshrc
 
 ln -sf $BASE_DIR/shell/.profile $HOME_DIR/.profile
@@ -211,13 +213,14 @@ export NVM_DIR="$HOME/.nvm"
 nvm install v24.18.0
 
 # claude code
-npm install -g @anthropic-ai/claude-code
+command -v claude >/dev/null || curl -fsSL https://claude.ai/install.sh | bash
 mkdir -p $HOME_DIR/.claude
-if __is_macos; then
-  jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.macos.json > $BASE_DIR/claude/settings.json
-else
-  jq -s '.[0] * .[1]' $BASE_DIR/claude/settings.base.json $BASE_DIR/claude/settings.linux.json > $BASE_DIR/claude/settings.json
-fi
+CLAUDE_PLATFORM_SETTINGS=$BASE_DIR/claude/settings.linux.json
+__is_macos && CLAUDE_PLATFORM_SETTINGS=$BASE_DIR/claude/settings.macos.json
+CLAUDE_LOCAL_SETTINGS=$BASE_DIR/claude/settings.local.json
+[ -f "$CLAUDE_LOCAL_SETTINGS" ] || echo '{}' > "$CLAUDE_LOCAL_SETTINGS"
+[ -f "$BASE_DIR/claude/settings.json" ] && cp "$BASE_DIR/claude/settings.json" "$BASE_DIR/claude/settings.json.bak"
+jq -s 'reduce .[] as $x ({}; . * $x)' $BASE_DIR/claude/settings.base.json "$CLAUDE_PLATFORM_SETTINGS" "$CLAUDE_LOCAL_SETTINGS" > $BASE_DIR/claude/settings.json
 ln -sf $BASE_DIR/claude/settings.json $HOME_DIR/.claude/settings.json
 ln -sf $BASE_DIR/claude/statusline-command.sh $HOME_DIR/.claude/statusline-command.sh
 ln -sf $BASE_DIR/claude/CLAUDE.md $HOME_DIR/.claude/CLAUDE.md

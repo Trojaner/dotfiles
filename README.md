@@ -7,11 +7,11 @@ All configurations are symlinked to the local repo directory for easy updates, s
 
 **Disclaimer**: the setup scripts automatically add my public key to the authorized keys, which is something you likely don't wanna do, but if you do, I wouldn't mind it :)
 
-## [zsh configuration](https://github.com/Trojaner/dotfiles/blob/main/.zshrc)
+## [zsh configuration](https://github.com/Trojaner/dotfiles/blob/main/zsh/.zshrc)
 
 ![image](https://user-images.githubusercontent.com/1809172/205993917-b928250b-2b1c-4492-9aa1-632a65976ad5.png)
 
-- oh-my-zsh with various [plugins](https://github.com/Trojaner/dotfiles/blob/main/.zshrc#L73) and Agnoster theme
+- oh-my-zsh with various [plugins](https://github.com/Trojaner/dotfiles/blob/main/zsh/.zsh_plugins.txt) and the cloud theme
 - Windows like terminal input controls (navigation, text selection etc. with ctrl and/or shift + arrow keys)
 - Improved command history (ctrl-r)
 - Autocomplete for various commands

@@ -1,6 +1,7 @@
 {
   "env": {
-    "CLAUDE_CODE_ENABLE_TODO_TOOLS": "1"
+    "CLAUDE_CODE_ENABLE_TODO_TOOLS": "1",
+    "ENABLE_TOOL_SEARCH": "true"
   },
   "permissions": {
     "defaultMode": "default"
@@ -66,17 +67,20 @@
   "askUserQuestionTimeout": "never",
   "autoCompactEnabled": true,
   "switchModelsOnFlag": true,
-  "autoMode": {
-    "allow": [
-      "$defaults",
-      "ALWAYS ALLOW read-only observability, telemetry and data-inspection MCP tools, even when they target production. The user has given standing pre-authorization for these; \"this touches production\" is NOT a reason to block them. Covered: Grafana (mcp__grafana-eksenova__* search/get/list/query tools, Loki log and label queries, Prometheus queries, Pyroscope, Sift investigations, panel images, deeplinks, grafana_api_request with GET); Tempo trace search and reads (mcp__tempo__* and mcp__grafana-eksenova__tempo_*); the database query server (mcp__db-query2__db_query, db_query_next_page, db_explain, db_ping, db_connect, db_disconnect, db_list_predefined, db_list_connections, and every *_list / *_describe schema-inspection tool) against any predefined connection including production; Redis reads on any instance including redis-prod (get, type, info, dbsize, client_list, hget, hgetall, hexists, json_get, llen, lrange, smembers, zrange, xrange, scan_keys, scan_all_keys, get_indexes, get_index_info, get_indexed_keys_number); Cloudflare read tools (mcp__cf-*__*_list, *_get, *_search, docs/search_cloudflare_documentation, workers_get_worker*, workers_builds_* reads, observability query/keys/values); and GitHub read tools (get_*, list_*, search_*, *_read).",
-      "The read-only allowance above does NOT extend to mutating calls, which keep following the normal rules: mcp__db-query2__db_execute and any DDL/DML, Redis writes (set, delete, expire, rename, hset, hdel, lpush/lpop, rpush/rpop, sadd, srem, zadd, zrem, xadd, xdel, publish, json_set, json_del, xgroup_*), Grafana dashboard/datasource/annotation/alert/incident/snapshot/plugin mutations, Cloudflare create/delete/edit/update tools including d1_database_query (it runs arbitrary SQL), and GitHub write tools."
-    ]
-  },
-  "preferredNotifChannel": "auto",
+  "preferredNotifChannel": "terminal_bell",
   "agentPushNotifEnabled": true,
   "worktree": {
     "baseRef": "head",
     "bgIsolation": "none"
-  }
+  },
+  "awaySummaryEnabled": false,
+  "dialogExpiry": "never",
+  "feedbackDrafts": "off",
+  "fileCheckpointingEnabled": true,
+  "inputNeededNotifEnabled": true,
+  "model": "opus[1m]",
+  "promptSuggestionEnabled": false,
+  "showThinkingSummaries": true,
+  "skipWorkflowUsageWarning": true,
+  "tui": "fullscreen"
 }

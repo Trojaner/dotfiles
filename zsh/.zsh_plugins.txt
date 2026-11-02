@@ -3,7 +3,6 @@ ahmetb/kubectx path:completion kind:fpath
 # zdharma-continuum/fast-syntax-highlighting
 getantidote/use-omz
 ohmyzsh/ohmyzsh path:lib
-ohmyzsh/ohmyzsh path:plugins/ansible
 # ohmyzsh/ohmyzsh path:plugins/aws
 ohmyzsh/ohmyzsh path:plugins/brew
 ohmyzsh/ohmyzsh path:plugins/colored-man-pages
@@ -12,16 +11,13 @@ ohmyzsh/ohmyzsh path:plugins/command-not-found
 ohmyzsh/ohmyzsh path:plugins/copybuffer
 ohmyzsh/ohmyzsh path:plugins/docker
 ohmyzsh/ohmyzsh path:plugins/docker-compose
-ohmyzsh/ohmyzsh path:plugins/doctl
 ohmyzsh/ohmyzsh path:plugins/dotnet
 ohmyzsh/ohmyzsh path:plugins/encode64
 ohmyzsh/ohmyzsh path:plugins/extract
 ohmyzsh/ohmyzsh path:plugins/fancy-ctrl-z
 ohmyzsh/ohmyzsh path:plugins/fastfile
-ohmyzsh/ohmyzsh path:plugins/fluxcd
 ohmyzsh/ohmyzsh path:plugins/fzf
 ohmyzsh/ohmyzsh path:plugins/git
-ohmyzsh/ohmyzsh path:plugins/git-auto-fetch
 ohmyzsh/ohmyzsh path:plugins/git-lfs
 ohmyzsh/ohmyzsh path:plugins/gh
 # ohmyzsh/ohmyzsh path:plugins/gpg-agent
@@ -29,34 +25,29 @@ ohmyzsh/ohmyzsh path:plugins/kubectl
 ohmyzsh/ohmyzsh path:plugins/kubectx
 # ohmyzsh/ohmyzsh path:plugins/kops
 # ohmyzsh/ohmyzsh path:plugins/kube-ps1
-ohmyzsh/ohmyzsh path:plugins/mongocli
-ohmyzsh/ohmyzsh path:plugins/nmap
 ohmyzsh/ohmyzsh path:plugins/node
 ohmyzsh/ohmyzsh path:plugins/npm
-ohmyzsh/ohmyzsh path:plugins/nvm
 ohmyzsh/ohmyzsh path:plugins/opentofu
 # ohmyzsh/ohmyzsh path:plugins/per-directory-history
 ohmyzsh/ohmyzsh path:plugins/pip
-ohmyzsh/ohmyzsh path:plugins/poetry
 ohmyzsh/ohmyzsh path:plugins/procs
-ohmyzsh/ohmyzsh path:plugins/pylint
 ohmyzsh/ohmyzsh path:plugins/python
 # ohmyzsh/ohmyzsh path:plugins/rbw
 # ohmyzsh/ohmyzsh path:plugins/redis-cli
 ohmyzsh/ohmyzsh path:plugins/rsync
 # ohmyzsh/ohmyzsh path:plugins/safe-paste
 ohmyzsh/ohmyzsh path:plugins/screen
-ohmyzsh/ohmyzsh path:plugins/snap
+ohmyzsh/ohmyzsh path:plugins/snap conditional:__is_linux
 ohmyzsh/ohmyzsh path:plugins/ssh
 # ohmyzsh/ohmyzsh path:plugins/ssh-agent
 ohmyzsh/ohmyzsh path:plugins/sudo
-ohmyzsh/ohmyzsh path:plugins/systemd
+ohmyzsh/ohmyzsh path:plugins/systemd conditional:__is_linux
 ohmyzsh/ohmyzsh path:plugins/themes
 ohmyzsh/ohmyzsh path:plugins/tig
 ohmyzsh/ohmyzsh path:plugins/timer
 ohmyzsh/ohmyzsh path:plugins/tmux
 ohmyzsh/ohmyzsh path:plugins/tmuxinator
-ohmyzsh/ohmyzsh path:plugins/ubuntu
+ohmyzsh/ohmyzsh path:plugins/ubuntu conditional:__is_linux
 ohmyzsh/ohmyzsh path:plugins/urltools
 ohmyzsh/ohmyzsh path:plugins/yarn
 # ohmyzsh/ohmyzsh path:plugins/z
@@ -71,7 +62,5 @@ zdharma-continuum/fast-syntax-highlighting
 # zsh-users/zsh-syntax-highlighting
 # zsh-users/zsh-history-substring-search
 larkery/zsh-histdb
-m42e/zsh-histdb-skim
 # unixorn/fzf-zsh-plugin
-Trojaner/zsh-copilot
 Aloxaf/fzf-tab

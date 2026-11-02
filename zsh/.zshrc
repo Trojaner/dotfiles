@@ -1,9 +1,13 @@
-export LANG=en_US.UTF-8
 ZDOTDIR="$HOME/.zsh"
 
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
 source "$ZDOTDIR/common_functions.sh"
+
+if [[ ! -o interactive ]]; then
+  [[ -f "$HOME/.zshrc_local" ]] && source "$HOME/.zshrc_local"
+  return 0
+fi
 
 if [ -f "$ZDOTDIR/.zsh_secrets.sh" ]; then
   source "$ZDOTDIR/.zsh_secrets.sh"
@@ -16,6 +20,18 @@ zstyle ':omz:update' frequency 7
 
 source "$ZDOTDIR/.antidote/antidote.zsh"
 
+zsh_plugins="$ZDOTDIR/.zsh_plugins"
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt || ! -f ${zsh_plugins}_paths.zsh ]]; then
+  (
+    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
+    {
+      print -r -- "export ZSH=${(q)$(antidote path ohmyzsh/ohmyzsh)}"
+      print -r -- "_histdb_dir=${(q)$(antidote path larkery/zsh-histdb)}"
+    } >${zsh_plugins}_paths.zsh
+  )
+fi
+source ${zsh_plugins}_paths.zsh
+
 setopt EXTENDED_HISTORY
 setopt INC_APPEND_HISTORY_TIME
 setopt HIST_FIND_NO_DUPS
@@ -25,26 +41,22 @@ setopt GLOB_DOTS
 setopt NO_HUP
 
 # oh-my-zsh settings
-export ZSH_DISABLE_COMPFIX=true
-export ZSH=$(antidote path ohmyzsh/ohmyzsh)
-export ZSH_AUTOSUGGEST_STRATEGY=(histdb_top_here completion)
-export ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
-export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-export ZSH_AUTOSUGGEST_USE_ASYNC=1
-export ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
-export ZSH_THEME="cloud"
-export ZSH_TMUX_UNICODE=true
-export ZSH_COPILOT_AI_PROVIDER="openai"
-export ZSH_COPILOT_KEY="^g"
-export ZSH_COPILOT_DEBUG="true"
-export COMPLETION_WAITING_DOTS="true"
-export DISABLE_UNTRACKED_FILES_DIRTY="true"
-export HIST_STAMPS="%d/%m/%Y %H:%M"
-export HISTORY_START_WITH_GLOBAL=1
-export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
-export HISTORY_SUBSTRING_SEARCH_FUZZY=0
-export HISTDB_NOSORT=0
-export HISTDB_DEFAULT_TAB=Host
+ZSH_DISABLE_COMPFIX=true
+ZSH_AUTOSUGGEST_STRATEGY=(histdb_top_here completion)
+ZSH_TAB_TITLE_DEFAULT_DISABLE_PREFIX=false
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+ZSH_TAB_TITLE_PREFIX='$USER@$HOST - '
+ZSH_THEME="cloud"
+ZSH_TMUX_UNICODE=true
+COMPLETION_WAITING_DOTS="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+HIST_STAMPS="%d/%m/%Y %H:%M"
+HISTORY_START_WITH_GLOBAL=1
+HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=1
+HISTORY_SUBSTRING_SEARCH_FUZZY=0
+HISTDB_NOSORT=0
+HISTDB_DEFAULT_TAB=Host
 # export WORDCHARS="${WORDCHARS//[\/_\-.]/}"
 
 # wsl
@@ -57,28 +69,22 @@ fi
 skip_global_compinit=1
 
 # antidote
-zsh_plugins="$ZDOTDIR/.zsh_plugins"
-if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
-  (
-    source "$ZDOTDIR/.antidote/antidote.zsh"
-    antidote bundle <${zsh_plugins}.txt >${zsh_plugins}.zsh
-  )
-fi
-
+setopt TYPESET_SILENT
 source ${zsh_plugins}.zsh
+unsetopt TYPESET_SILENT
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  export HISTDB_TABULATE_CMD=(sed -e $'s/\x1f/\t/g')
+  HISTDB_TABULATE_CMD=(sed -e $'s/\x1f/\t/g')
 fi
 
-_histdb_dir="$(antidote path larkery/zsh-histdb)"
 source "${_histdb_dir}/sqlite-history.zsh"
 source "${_histdb_dir}/histdb-interactive.zsh"
 unset _histdb_dir
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   if [ -f "/opt/homebrew/bin/brew" ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+    fpath[1,0]="/opt/homebrew/share/zsh/site-functions"
+    export FPATH
   fi
 
   # brew shellenv forces /opt/homebrew to the front of PATH; move it to the
@@ -86,26 +92,14 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   path=(${path:#/opt/homebrew/(bin|sbin)} /opt/homebrew/bin /opt/homebrew/sbin)
 
   if [ -f "/opt/homebrew/bin/pyenv" ]; then
-    eval "$(pyenv init -)"
+    eval "$(pyenv init - --no-rehash zsh)"
   fi
 fi
-
-PATH_DIRECTORIES=(
-  "/bin/local"
-  "/usr/local/bin"
-  "/snap/bin"
-  "$HOME/bin"
-  "$HOME/.local/bin"
-  "$HOME/.cargo/bin"
-  "$HOME/.krew/bin"
-  "$HOME/.go/bin"
-  "$HOME/.dotnet/tools"
-)
 
 append_path "${PATH_DIRECTORIES[@]}"
 
 # build flags
-export ARCHFLAGS="-arch $(uname -m)"
+export ARCHFLAGS="-arch $CPUTYPE"
 export CMAKE_GENERATOR=Ninja
 export TRITON_BUILD_WITH_CCACHE=true
 export DOCKER_BUILDKIT=1
@@ -119,11 +113,6 @@ export DOCKER_BUILDKIT=1
 #  export CXX=/usr/bin/clang++
 #fi
 
-# telemtry and auto updates
-export NO_ALBUMENTATIONS_UPDATE=1
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
-export DOTNET_NOLOGO=1
-
 # ffmpeg
 if [ -f "/usr/bin/ffmpeg" ]; then
   export FFMPEG_PATH=/usr/bin/ffmpeg
@@ -135,17 +124,14 @@ if [ -d "/usr/lib/x86_64-linux-gnu/openblas" ]; then
 fi
 
 # go
-export GO111MODULE=on
-export GOPATH="$HOME/.go"
 export CGO_ENABLED=1
 
 # python
-export PYTHONIOENCODING=UTF-8
-export PYTHONUTF8=1
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
 
 # aliases
 # alias cd='z'
+alias ls='eza -lah --icons=always --color=always --created --changed --git --no-quotes'
 alias kubectx='kubectl ctx'
 alias kubens='kubectl ns'
 alias python='python3'
@@ -153,16 +139,13 @@ alias tmux='tmux -u -2'
 alias muse='muse --disable-sandbox'
 
 # Open the agents view only when no arguments were supplied.
-# Only in a real interactive terminal, so tool shells (and their snapshots) get the plain binary.
-if [[ -o interactive && -t 0 && -t 1 && -z $CLAUDECODE ]]; then
-  codex() {
-    if (( $# == 0 )); then
-      command codex agents
-    else
-      command codex "$@"
-    fi
-  }
-fi
+codex() {
+  if (( $# == 0 )); then
+    command codex agents
+  else
+    command codex "$@"
+  fi
+}
 
 if [ -f "/opt/homebrew/bin/rsync" ]; then
    alias rsync='/opt/homebrew/bin/rsync -rukLEptIh --stats --info=progress2 --info=name0'
@@ -179,7 +162,7 @@ export KUBE_EDITOR="$EDITOR"
 export GIT_EDITOR="$EDITOR"
 
 # gpg tty fix
-export GPG_TTY=$(tty)
+export GPG_TTY=$TTY
 
 autoload -Uz history-search-end
 
@@ -385,9 +368,7 @@ autoload -Uz add-zsh-hook
 add-zsh-hook precmd __disable_mouse_tracking
 
 autoload -Uz add-zle-hook-widget
-__zle_sanity_line_init()  { __disable_mouse_tracking }
 __zle_sanity_line_finish(){ __disable_mouse_tracking }
-add-zle-hook-widget line-init   __zle_sanity_line_init
 add-zle-hook-widget line-finish __zle_sanity_line_finish
 
 # completions
@@ -432,9 +413,15 @@ else
 fi
 
 if [[ "$TERM_PROGRAM" == "vscode" ]] && [[ -d "$HOME/.vscode-server-insiders" ]]; then
-  vscode_server_path=$(find "$HOME/.vscode-server-insiders" -name "code-insiders" -type f -print -quit 2>/dev/null)
-  [[ -f "$vscode_server_path" ]] && . "$("$vscode_server_path" --locate-shell-integration-path zsh)"
-  unset vscode_server_path
+  vscode_integration_cache="$ZDOTDIR/.vscode_shell_integration"
+  [[ -f "$vscode_integration_cache" ]] && vscode_integration=$(<"$vscode_integration_cache")
+  if [[ ! -f "$vscode_integration" ]]; then
+    vscode_server_path=$(find "$HOME/.vscode-server-insiders" -name "code-insiders" -type f -print -quit 2>/dev/null)
+    [[ -f "$vscode_server_path" ]] && vscode_integration=$("$vscode_server_path" --locate-shell-integration-path zsh)
+    [[ -f "$vscode_integration" ]] && print -r -- "$vscode_integration" >"$vscode_integration_cache"
+  fi
+  [[ -f "$vscode_integration" ]] && . "$vscode_integration"
+  unset vscode_integration_cache vscode_integration vscode_server_path
 fi
 
 # fzf
@@ -489,11 +476,6 @@ __reset_terminal_colors() {
   printf '\033[39;49m' > /dev/tty
 }
 
-if [[ $- == *i* ]]; then
-  __reset_terminal_colors
-fi
+__reset_terminal_colors
 
-if [[ -o interactive && -t 0 && -t 1 && -z $CLAUDECODE ]]; then
-  eval "$(zoxide init --cmd cd zsh)"
-fi
-export PATH=$PATH:$HOME/.maestro/bin
+eval "$(zoxide init --cmd cd zsh)"

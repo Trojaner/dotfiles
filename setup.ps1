@@ -71,6 +71,9 @@ function Merge-Settings($target, $source) {
     }
 }
 Merge-Settings $base $platform
+if (Test-Path ".\claude\settings.local.json") {
+    Merge-Settings $base (Get-Content ".\claude\settings.local.json" -Raw | ConvertFrom-Json -AsHashtable)
+}
 $base | ConvertTo-Json -Depth 10 | Set-Content "$HOME\.claude\settings.json"
 New-Item -Path "$HOME\.claude\statusline-command.sh" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.sh").Path | Out-Null
 New-Item -Path "$HOME\.claude\statusline-command.ps1" -ItemType SymbolicLink -Value (Resolve-Path ".\claude\statusline-command.ps1").Path | Out-Null
