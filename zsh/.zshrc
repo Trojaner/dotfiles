@@ -493,5 +493,7 @@ if [[ $- == *i* ]]; then
   __reset_terminal_colors
 fi
 
-eval "$(zoxide init --cmd cd zsh)"
+if [[ -o interactive && -t 0 && -t 1 && -z $CLAUDECODE ]]; then
+  eval "$(zoxide init --cmd cd zsh)"
+fi
 export PATH=$PATH:$HOME/.maestro/bin
