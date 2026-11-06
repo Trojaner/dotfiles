@@ -7,6 +7,13 @@ export DOTNET_NOLOGO=1
 
 # dotnet
 export DOTNET_ROOT="$HOME/.dotnet"
+# NuGet cache on an SMB share: .NET file locks fail there
+[[ -L "$HOME/.nuget/packages" ]] && export DOTNET_SYSTEM_IO_DISABLEFILELOCKING=1
+
+# gradle: the shared cache is read-only (no byte-range locks on SMB), the writable cache stays local
+GRADLE_SHARED_CACHE="/Volumes/ml-data-hdd/mac-caches/esozbek/mac-arm64/gradle-caches"
+[[ -d "$GRADLE_SHARED_CACHE/modules-2" ]] && export GRADLE_RO_DEP_CACHE="$GRADLE_SHARED_CACHE"
+unset GRADLE_SHARED_CACHE
 
 # go
 export GO111MODULE=on
